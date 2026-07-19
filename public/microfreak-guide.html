@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MicroFreak Field Guide</title>
+<style>
+:root{
+  --panel:#23262b; --panel-deep:#17191d; --panel-line:#3a3f47;
+  --ink:#e9e7e1; --ink-dim:#9aa0a8; --ink-faint:#6b7078;
+  --orange:#e8622d; --orange-hi:#f07a3b; --blue:#7eb6e8;
+  --oled:#0c0d0f; --oled-glow:#f2f0ea;
+  --mono:ui-monospace,'SF Mono','Cascadia Mono','Consolas',monospace;
+  --sans:-apple-system,'Segoe UI',system-ui,Roboto,'Helvetica Neue',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--panel-deep);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+
+/* silkscreen section labels — like the panel dividers */
+.silk{display:flex;align-items:center;gap:14px;margin:0 0 28px}
+.silk::before,.silk::after{content:"";flex:1;height:1px;background:var(--panel-line)}
+.silk span{font-family:var(--mono);font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--ink-dim);white-space:nowrap}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:rgba(23,25,29,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--panel-line)}
+nav .wrap{display:flex;gap:4px;overflow-x:auto;padding:10px 20px}
+nav a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim);text-decoration:none;padding:6px 12px;border-radius:4px;white-space:nowrap}
+nav a:hover,nav a:focus-visible{color:var(--orange-hi);background:var(--panel)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* hero */
+header{padding:64px 0 48px;text-align:center}
+.oled{display:inline-block;background:var(--oled);border:1px solid var(--panel-line);border-radius:6px;padding:14px 26px;margin-bottom:22px;box-shadow:inset 0 0 24px rgba(242,240,234,.04)}
+.oled .line1{font-family:var(--mono);font-size:12px;letter-spacing:.3em;color:var(--ink-faint);text-transform:uppercase}
+.oled .line2{font-family:var(--mono);font-size:26px;letter-spacing:.08em;color:var(--oled-glow);margin-top:4px}
+.oled .cursor{display:inline-block;width:11px;height:22px;background:var(--oled-glow);vertical-align:-3px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+header p.sub{color:var(--ink-dim);max-width:560px;margin:0 auto;font-size:15px}
+header .grain{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--orange);margin-top:14px;text-transform:uppercase}
+
+section{padding:44px 0}
+h2.visually-hidden,.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+h3{font-size:17px;font-weight:600;margin-bottom:10px;color:var(--ink)}
+p.lead{color:var(--ink-dim);font-size:15px;max-width:640px;margin-bottom:26px}
+
+/* signal flow svg */
+.flow-card{background:var(--panel);border:1px solid var(--panel-line);border-radius:10px;padding:22px}
+.flow-card svg{width:100%;height:auto;display:block}
+.flow-node{cursor:pointer}
+.flow-node rect{transition:stroke .15s}
+.flow-node:hover rect{stroke:var(--orange-hi)}
+
+/* panel section cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--panel-line);border-radius:10px;padding:18px 18px 16px}
+.card .tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;padding:3px 8px;border-radius:3px;display:inline-block;margin-bottom:10px}
+.tag.osc{color:var(--orange-hi);background:rgba(232,98,45,.12)}
+.tag.filt{color:#63d6b0;background:rgba(99,214,176,.1)}
+.tag.mod{color:var(--blue);background:rgba(126,182,232,.1)}
+.tag.perf{color:var(--ink-dim);background:rgba(154,160,168,.1)}
+.card h4{font-size:15px;font-weight:600;margin-bottom:6px}
+.card p{font-size:13.5px;color:var(--ink-dim)}
+.card p b{color:var(--ink);font-weight:600}
+
+/* playground */
+.play{background:var(--panel);border:1px solid var(--panel-line);border-radius:12px;padding:26px}
+.play-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px 26px;margin-bottom:8px}
+.ctl label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:8px}
+.ctl label output{color:var(--orange-hi)}
+input[type=range]{width:100%;appearance:none;height:4px;border-radius:2px;background:var(--panel-line)}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:20px;height:20px;border-radius:50%;background:var(--orange);border:3px solid var(--panel-deep);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--orange);border:3px solid var(--panel-deep);cursor:pointer}
+.wave-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}
+.wave-row button,.preset-row button{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:transparent;border:1px solid var(--panel-line);color:var(--ink-dim);padding:8px 14px;border-radius:5px;cursor:pointer;transition:all .15s}
+.wave-row button:hover,.preset-row button:hover{border-color:var(--ink-dim);color:var(--ink)}
+.wave-row button.on{border-color:var(--orange);color:var(--orange-hi);background:rgba(232,98,45,.1)}
+.preset-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.preset-row button.on{border-color:var(--blue);color:var(--blue);background:rgba(126,182,232,.08)}
+#envview{width:100%;height:auto;display:block;background:var(--oled);border:1px solid var(--panel-line);border-radius:8px;margin-bottom:20px}
+
+/* touch keyboard */
+.kbd{display:flex;gap:4px;user-select:none;touch-action:none}
+.key{flex:1;height:88px;background:var(--panel-deep);border:1px solid var(--panel-line);border-radius:6px;cursor:pointer;position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font-family:var(--mono);font-size:10px;color:var(--ink-faint);transition:background .08s}
+.key.sharp{background:#101215}
+.key.held{background:rgba(232,98,45,.25);border-color:var(--orange)}
+.key::before{content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);width:60%;height:8px;background:repeating-linear-gradient(90deg,var(--panel-line) 0 5px,transparent 5px 10px);opacity:.5}
+.play .hint{font-size:12.5px;color:var(--ink-faint);margin-top:12px}
+.play .hint kbd{font-family:var(--mono);background:var(--panel-deep);border:1px solid var(--panel-line);border-radius:3px;padding:1px 6px;font-size:11px;color:var(--ink-dim)}
+
+/* recipes */
+.recipe{background:var(--panel);border:1px solid var(--panel-line);border-radius:12px;padding:22px;margin-bottom:18px}
+.recipe header{padding:0;text-align:left;display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+.recipe h4{font-size:17px;font-weight:600}
+.recipe .vibe{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.08em}
+.recipe .why{font-size:13.5px;color:var(--ink-dim);border-left:2px solid var(--orange);padding-left:12px;margin:14px 0 18px}
+.knob-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:14px 8px}
+.knob{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.knob .dial{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#3d424a,#22252a 70%);border:1px solid var(--panel-line);position:relative;flex-shrink:0}
+.knob .dial.orange{background:radial-gradient(circle at 38% 32%,#f07a3b,#c14e1e 75%)}
+.knob .dial i{position:absolute;left:50%;top:4px;width:2px;height:15px;background:var(--oled-glow);transform-origin:50% 19px;border-radius:1px}
+.knob .dial.orange i{background:#fff}
+.knob .nm{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);line-height:1.35}
+.knob .val{font-family:var(--mono);font-size:10px;color:var(--orange-hi)}
+.knob.sw .dial{border-radius:8px;background:var(--panel-deep)}
+.knob.sw .dial.lit{box-shadow:inset 0 0 12px rgba(242,240,234,.5);background:#3a3f47}
+.knob.sw .dial span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--ink)}
+.recipe .extra{font-size:13.5px;color:var(--ink-dim);margin-top:16px}
+.recipe .extra b{color:var(--blue);font-weight:600}
+.tryit{margin-top:14px}
+.tryit button{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:rgba(232,98,45,.12);border:1px solid var(--orange);color:var(--orange-hi);padding:8px 16px;border-radius:5px;cursor:pointer}
+.tryit button:hover{background:rgba(232,98,45,.22)}
+
+/* tutorials */
+.tut{background:var(--panel);border:1px solid var(--panel-line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+.tut summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:14px;padding:18px 22px;flex-wrap:wrap}
+.tut summary::-webkit-details-marker{display:none}
+.tut summary:hover{background:rgba(232,98,45,.05)}
+.tut .num{font-family:var(--mono);font-size:13px;color:var(--orange);letter-spacing:.1em;flex-shrink:0}
+.tut .ttl{font-size:15.5px;font-weight:600}
+.tut .meta{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;margin-left:auto}
+.tut .body{padding:0 22px 20px;border-top:1px solid var(--panel-line)}
+.tut .goal{font-size:13.5px;color:var(--ink-dim);margin:14px 0 16px}
+.tut ol{margin:0 0 0 20px;display:flex;flex-direction:column;gap:9px}
+.tut ol li{font-size:14px;color:var(--ink)}
+.tut ol li b{color:var(--orange-hi);font-weight:600}
+.tut ol li .m{font-family:var(--mono);font-size:12px;color:var(--blue)}
+.tut .listen{font-size:13.5px;color:var(--ink-dim);border-left:2px solid var(--blue);padding-left:12px;margin-top:16px}
+.tut .listen b{color:var(--blue);font-weight:600}
+.tut[open] summary .num::after{content:" ▾"}
+.tut:not([open]) summary .num::after{content:" ▸"}
+
+/* glossary */
+.gsearch{width:100%;background:var(--panel);border:1px solid var(--panel-line);border-radius:8px;color:var(--ink);font-size:15px;padding:12px 16px;margin-bottom:18px;font-family:var(--sans)}
+.gsearch::placeholder{color:var(--ink-faint)}
+.gcat{margin-bottom:26px}
+.gcat h4{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--panel-line)}
+.gterm{display:flex;gap:14px;padding:9px 10px;border-radius:6px;align-items:baseline}
+.gterm:hover{background:var(--panel)}
+.gterm dt{font-size:13.5px;font-weight:600;min-width:150px;flex-shrink:0;color:var(--ink)}
+.gterm dd{font-size:13.5px;color:var(--ink-dim)}
+.gterm.hide{display:none}
+.gcat.hide{display:none}
+
+/* mental model + footer */
+.mantra{background:var(--panel);border:1px solid var(--panel-line);border-left:3px solid var(--orange);border-radius:10px;padding:22px 24px;font-size:16px;color:var(--ink)}
+.mantra b{color:var(--orange-hi)}
+footer{padding:44px 0 60px;text-align:center;color:var(--ink-faint);font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase}
+@media (max-width:600px){.gterm{flex-direction:column;gap:2px}.gterm dt{min-width:0}header{padding:44px 0 32px}.oled .line2{font-size:20px}}
+</style>
+</head>
+<body>
+
+<nav aria-label="Sections"><div class="wrap">
+<a href="#flow">Signal flow</a>
+<a href="#panel">The panel</a>
+<a href="#playground">Playground</a>
+<a href="#recipes">Patch recipes</a>
+<a href="#tutorials">Tutorials</a>
+<a href="#arpseq">Arp &amp; Seq 0→100</a>
+<a href="#glossary">Glossary</a>
+<a href="#model">Mental model</a>
+</div></nav>
+
+<header class="wrap">
+  <div class="oled">
+    <div class="line1">Preset 001</div>
+    <div class="line2">MicroFreak field guide<span class="cursor"></span></div>
+  </div>
+  <p class="sub">Everything you need to stop nodding along and start actually understanding your synth — the panel, the vocabulary, and three sounds you can build tonight. Turn your volume on: the playground below makes real sound.</p>
+  <div class="grain">)) grain de folie ((</div>
+</header>
+
+<section id="flow" class="wrap">
+  <div class="silk"><span>Signal flow</span></div>
+  <p class="lead">One idea explains the whole machine: sound moves left to right through three stages, while the modulators underneath reach up and turn the knobs for you. Click a block to jump to its explanation.</p>
+  <div class="flow-card">
+  <svg viewBox="0 0 900 210" role="img" aria-label="Signal flow: digital oscillator into analog filter into amp and output, with modulators acting on all three from below">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#9aa0a8" stroke-width="1.4" stroke-linecap="round"/></marker>
+    <marker id="ahb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M2 1L8 5L2 9" fill="none" stroke="#7eb6e8" stroke-width="1.4" stroke-linecap="round"/></marker></defs>
+    <a class="flow-node" href="#panel"><g>
+      <rect x="30" y="34" width="230" height="70" rx="10" fill="rgba(232,98,45,.1)" stroke="#e8622d" stroke-width="1"/>
+      <text x="145" y="63" text-anchor="middle" fill="#f07a3b" font-size="16" font-weight="600" font-family="sans-serif">Digital oscillator</text>
+      <text x="145" y="86" text-anchor="middle" fill="#9aa0a8" font-size="12.5" font-family="sans-serif">creates the raw tone</text>
+    </g></a>
+    <line x1="262" y1="69" x2="322" y2="69" stroke="#9aa0a8" stroke-width="1.4" marker-end="url(#ah)"/>
+    <a class="flow-node" href="#panel"><g>
+      <rect x="330" y="34" width="220" height="70" rx="10" fill="rgba(99,214,176,.08)" stroke="#63d6b0" stroke-width="1"/>
+      <text x="440" y="63" text-anchor="middle" fill="#63d6b0" font-size="16" font-weight="600" font-family="sans-serif">Analog filter</text>
+      <text x="440" y="86" text-anchor="middle" fill="#9aa0a8" font-size="12.5" font-family="sans-serif">removes harmonics</text>
+    </g></a>
+    <line x1="552" y1="69" x2="612" y2="69" stroke="#9aa0a8" stroke-width="1.4" marker-end="url(#ah)"/>
+    <a class="flow-node" href="#panel"><g>
+      <rect x="620" y="34" width="250" height="70" rx="10" fill="rgba(154,160,168,.08)" stroke="#6b7078" stroke-width="1"/>
+      <text x="745" y="63" text-anchor="middle" fill="#e9e7e1" font-size="16" font-weight="600" font-family="sans-serif">Amp → output</text>
+      <text x="745" y="86" text-anchor="middle" fill="#9aa0a8" font-size="12.5" font-family="sans-serif">volume over time</text>
+    </g></a>
+    <a class="flow-node" href="#panel"><g>
+      <rect x="240" y="150" width="420" height="44" rx="10" fill="rgba(126,182,232,.07)" stroke="#7eb6e8" stroke-width="1"/>
+      <text x="450" y="177" text-anchor="middle" fill="#7eb6e8" font-size="14" font-weight="600" font-family="sans-serif">Envelopes · LFO · Mod matrix · Pressure</text>
+    </g></a>
+    <line x1="330" y1="148" x2="180" y2="110" stroke="#7eb6e8" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#ahb)"/>
+    <line x1="450" y1="148" x2="445" y2="112" stroke="#7eb6e8" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#ahb)"/>
+    <line x1="570" y1="148" x2="715" y2="110" stroke="#7eb6e8" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#ahb)"/>
+  </svg>
+  </div>
+</section>
+
+<section id="panel" class="wrap">
+  <div class="silk"><span>The panel, section by section</span></div>
+  <div class="grid">
+    <div class="card"><span class="tag osc">Sound source</span><h4>Digital oscillator</h4><p><b>Type</b> picks the engine (wavetable, FM, granular, virtual analog…); <b>Wave</b>, <b>Timbre</b> and <b>Shape</b> morph its character — their exact job changes per engine. <b>Glide</b> makes notes slide into each other. This section decides whether you get a soft flute or a screaming FM lead.</p></div>
+    <div class="card"><span class="tag filt">Tone shaping</span><h4>Analog filter</h4><p><b>Cutoff</b> darkens or brightens the tone; <b>Resonance</b> adds a whistling peak at the cutoff point. <b>Type</b> switches LPF (keep lows — the classic), BPF (keep a middle slice — nasal), HPF (keep highs — thin and airy). Sweeping cutoff is the "wah" of all synth music.</p></div>
+    <div class="card"><span class="tag mod">Time shaping</span><h4>Envelope</h4><p>Shapes how each note evolves: <b>Attack</b> (fade-in time), <b>Decay/Rel</b> (fall time), <b>Sustain</b> (held level). Slow attack = pad, instant attack + short decay = pluck. <b>Filter Amt</b> lets the envelope punch the filter open on every note. <b>Amp Mod</b> ON makes it control volume — leave it on.</p></div>
+    <div class="card"><span class="tag mod">Time shaping</span><h4>Cycling envelope</h4><p>A second envelope with a trick: <b>Mode</b> sets it to Env (normal), Run (one-shot) or <b>Loop</b> — where it repeats forever like a fancy LFO. Route it in the matrix for rhythmic pulsing, tremolo, or textures that evolve on their own. <b>Rise</b>/<b>Fall</b> set its timing.</p></div>
+    <div class="card"><span class="tag mod">Movement</span><h4>LFO</h4><p>A wave too slow to hear, used to wiggle other knobs. Routed to pitch = <b>vibrato</b>; to cutoff = <b>wobble</b>; to volume = <b>tremolo</b>. <b>Shape</b> picks the wiggle pattern (triangle is smooth, square gives trills, random gets glitchy), <b>Rate</b> sets the speed, <b>Sync</b> locks it to tempo.</p></div>
+    <div class="card"><span class="tag mod">Movement</span><h4>Mod matrix</h4><p>The patch bay — the MicroFreak's superpower. Turn the <b>Matrix</b> knob to an intersection of a source row (LFO, envelopes, Pressure, Key/Arp) and a destination column (Pitch, Wave, Timbre, Cutoff + 3 assignable), click, and dial in an amount. This is where static sounds come alive.</p></div>
+    <div class="card"><span class="tag perf">Performance</span><h4>Arp / Seq + Spice &amp; Dice</h4><p>The <b>arpeggiator</b> plays held chords as note patterns (Up, Order, Random, Pattern); the <b>sequencer</b> records looping phrases. <b>Dice</b> reshuffles your sequence's rhythm, <b>Spice</b> sets how much variation is applied — controlled happy accidents.</p></div>
+    <div class="card"><span class="tag perf">Performance</span><h4>Touch keyboard</h4><p>The flat capacitive keys sense <b>pressure</b> — press harder while holding a note and, via the matrix, that pressure can bend anything (brightness, vibrato depth, wave shape). <b>Paraphonic</b> mode allows 4 notes at once, sharing the single analog filter.</p></div>
+  </div>
+</section>
+
+<section id="playground" class="wrap">
+  <div class="silk"><span>Playground — hear it</span></div>
+  <p class="lead">A miniature MicroFreak in your browser: one oscillator → one low-pass filter → one envelope, exactly the signal flow above. Move a slider, play a key, hear the difference. This is the fastest way to make the vocabulary stick.</p>
+  <div class="play">
+    <div class="wave-row" role="group" aria-label="Oscillator waveform">
+      <button data-wave="sawtooth" class="on">Saw</button>
+      <button data-wave="square">Square</button>
+      <button data-wave="triangle">Triangle</button>
+      <button data-wave="sine">Sine</button>
+    </div>
+    <div class="play-controls">
+      <div class="ctl"><label>Attack <output id="o-a">5</output></label><input type="range" id="p-a" min="1" max="100" value="5"></div>
+      <div class="ctl"><label>Decay <output id="o-d">25</output></label><input type="range" id="p-d" min="1" max="100" value="25"></div>
+      <div class="ctl"><label>Sustain <output id="o-s">50</output></label><input type="range" id="p-s" min="0" max="100" value="50"></div>
+      <div class="ctl"><label>Release <output id="o-r">20</output></label><input type="range" id="p-r" min="1" max="100" value="20"></div>
+      <div class="ctl"><label>Cutoff <output id="o-c">70</output></label><input type="range" id="p-c" min="5" max="100" value="70"></div>
+      <div class="ctl"><label>Resonance <output id="o-q">15</output></label><input type="range" id="p-q" min="0" max="100" value="15"></div>
+    </div>
+    <div class="preset-row" role="group" aria-label="Presets">
+      <button data-preset="pluck">Pluck</button>
+      <button data-preset="pad">Pad</button>
+      <button data-preset="bass">Bass stab</button>
+    </div>
+    <svg id="envview" viewBox="0 0 900 190" aria-label="Envelope curve and filter brightness band">
+      <rect id="v-band" x="30" y="60" width="840" height="100" rx="6" fill="rgba(99,214,176,.14)"/>
+      <line x1="30" y1="160" x2="870" y2="160" stroke="#3a3f47"/>
+      <path id="v-env" d="" fill="none" stroke="#e8622d" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="30" y="180" fill="#6b7078" font-size="11" font-family="monospace">KEY DOWN</text>
+      <text x="870" y="180" fill="#6b7078" font-size="11" font-family="monospace" text-anchor="end">KEY UP → RELEASE</text>
+      <text id="v-cutlabel" x="862" y="76" fill="#63d6b0" font-size="11" font-family="monospace" text-anchor="end">FILTER OPEN</text>
+    </svg>
+    <div class="kbd" id="kbd" aria-label="Touch keyboard — play with mouse, touch, or keys A W S E D F T G Y H U J K"></div>
+    <p class="hint">Play with your computer keyboard too: <kbd>A</kbd> <kbd>W</kbd> <kbd>S</kbd> <kbd>E</kbd> <kbd>D</kbd> <kbd>F</kbd> <kbd>T</kbd> <kbd>G</kbd> <kbd>Y</kbd> <kbd>H</kbd> <kbd>U</kbd> <kbd>J</kbd> <kbd>K</kbd> — like the MicroFreak's touch keys. Sound starts after your first click (browser rule).</p>
+    <p class="hint" id="whattolisten">Try this: set Attack to 90 and hold a key — the note swells in like a pad. Now Attack 1, Sustain 0, short Decay — every note is a pluck. Then sweep Cutoff up and down while holding a chord.</p>
+  </div>
+</section>
+
+<section id="recipes" class="wrap">
+  <div class="silk"><span>Three patch recipes</span></div>
+  <p class="lead">Knob positions are given as clock positions: 7 o'clock = fully left (minimum), 12 = middle, 5 o'clock = fully right (maximum). Start each patch from an initialized preset (Utility → Preset → Init). And remember: if a patch is silent, check <b style="color:var(--ink)">Amp Mod is ON</b>.</p>
+
+  <div class="recipe">
+    <header><h4>01 · Pluck</h4><span class="vibe">percussive · sparkly · every note a blip</span></header>
+    <p class="why">Zero sustain + short decay means every note dies instantly, even if held. Filter Amt makes the filter snap open and shut with each note — that's the "tick."</p>
+    <div class="knob-row">
+      <div class="knob sw"><div class="dial"><span>SUPERWAVE</span></div><div class="nm">Osc type</div></div>
+      <div class="knob"><div class="dial orange"><i style="transform:rotate(-45deg)"></i></div><div class="nm">Wave</div><div class="val">10 o'clock</div></div>
+      <div class="knob"><div class="dial orange"><i style="transform:rotate(-90deg)"></i></div><div class="nm">Timbre</div><div class="val">9 o'clock</div></div>
+      <div class="knob"><div class="dial orange"><i style="transform:rotate(0deg)"></i></div><div class="nm">Shape</div><div class="val">12 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(75deg)"></i></div><div class="nm">Cutoff</div><div class="val">2–3 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-45deg)"></i></div><div class="nm">Resonance</div><div class="val">10 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-135deg)"></i></div><div class="nm">Attack</div><div class="val">7 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-90deg)"></i></div><div class="nm">Decay / Rel</div><div class="val">9 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-135deg)"></i></div><div class="nm">Sustain</div><div class="val">7 o'clock (zero)</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(45deg)"></i></div><div class="nm">Filter Amt</div><div class="val">1 o'clock</div></div>
+      <div class="knob sw"><div class="dial lit"><span>AMP MOD</span></div><div class="nm">ON — essential</div></div>
+    </div>
+    <div class="tryit"><button data-preset="pluck">▸ Hear it in the playground</button></div>
+  </div>
+
+  <div class="recipe">
+    <header><h4>02 · Pad</h4><span class="vibe">slow · warm · breathing chords</span></header>
+    <p class="why">The slow attack makes notes fade in; the long release blurs chords into each other. The slow LFO on cutoff is what separates a living pad from a static organ.</p>
+    <div class="knob-row">
+      <div class="knob sw"><div class="dial"><span>WAVETABLE</span></div><div class="nm">Osc type</div></div>
+      <div class="knob sw"><div class="dial lit"><span>PARA</span></div><div class="nm">Paraphonic ON</div></div>
+      <div class="knob"><div class="dial orange"><i style="transform:rotate(-22deg)"></i></div><div class="nm">Wave</div><div class="val">11 o'clock</div></div>
+      <div class="knob"><div class="dial orange"><i style="transform:rotate(45deg)"></i></div><div class="nm">Timbre</div><div class="val">1 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-11deg)"></i></div><div class="nm">Cutoff</div><div class="val">11–12 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-112deg)"></i></div><div class="nm">Resonance</div><div class="val">8 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(60deg)"></i></div><div class="nm">Attack</div><div class="val">1–2 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(75deg)"></i></div><div class="nm">Decay / Rel</div><div class="val">2 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(90deg)"></i></div><div class="nm">Sustain</div><div class="val">3 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-45deg)"></i></div><div class="nm">Filter Amt</div><div class="val">10 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-90deg)"></i></div><div class="nm">LFO Rate</div><div class="val">9 o'clock · triangle</div></div>
+    </div>
+    <p class="extra"><b>Matrix routings:</b> LFO → Cutoff, small positive amount (~+15) so the tone slowly breathes. Bonus: Press → Cutoff (~+20) so pressing keys harder brightens the chord.</p>
+    <div class="tryit"><button data-preset="pad">▸ Hear it in the playground</button></div>
+  </div>
+
+  <div class="recipe">
+    <header><h4>03 · Bass stab</h4><span class="vibe">instant · punchy · filter punches open</span></header>
+    <p class="why">Instant attack + medium-short decay is the "stab." A strong Filter Amt makes the filter kick open on every note, which reads as punch. Bass wants mono — Paraphonic OFF.</p>
+    <div class="knob-row">
+      <div class="knob sw"><div class="dial"><span>VANALOG</span></div><div class="nm">Osc type</div></div>
+      <div class="knob sw"><div class="dial"><span>OCT −1/−2</span></div><div class="nm">Octave down</div></div>
+      <div class="knob"><div class="dial orange"><i style="transform:rotate(75deg)"></i></div><div class="nm">Wave</div><div class="val">2 o'clock (saw)</div></div>
+      <div class="knob"><div class="dial orange"><i style="transform:rotate(45deg)"></i></div><div class="nm">Timbre</div><div class="val">1 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(100deg)"></i></div><div class="nm">Cutoff</div><div class="val">3–4 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-22deg)"></i></div><div class="nm">Resonance</div><div class="val">11 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-135deg)"></i></div><div class="nm">Attack</div><div class="val">7 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-33deg)"></i></div><div class="nm">Decay / Rel</div><div class="val">10–11 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(15deg)"></i></div><div class="nm">Sustain</div><div class="val">12–1 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(75deg)"></i></div><div class="nm">Filter Amt</div><div class="val">2 o'clock</div></div>
+      <div class="knob"><div class="dial"><i style="transform:rotate(-112deg)"></i></div><div class="nm">Glide</div><div class="val">8–9 o'clock (opt.)</div></div>
+    </div>
+    <p class="extra"><b>Going acid:</b> push Resonance toward 1 o'clock, pull Cutoff back to 12, add Glide — instant 303-style slides. Then sequence it and let Spice &amp; Dice mutate the line.</p>
+    <div class="tryit"><button data-preset="bass">▸ Hear it in the playground</button></div>
+  </div>
+</section>
+
+<section id="tutorials" class="wrap">
+  <div class="silk"><span>Tutorials &amp; examples</span></div>
+  <p class="lead">Seven hands-on exercises, easiest first. Each takes 5–20 minutes at the synth. Do them in order — every one builds on the vocabulary of the previous. Click a tutorial to expand it.</p>
+
+  <details class="tut" open>
+    <summary><span class="num">T-01</span><span class="ttl">Meet the engines — your first sound from scratch</span><span class="meta">5 min · easiest</span></summary>
+    <div class="body">
+      <p class="goal">Goal: understand that <b style="color:var(--ink)">Type</b> changes everything, and Wave/Timbre/Shape mean something different per engine.</p>
+      <ol>
+        <li>Initialize a patch: <b>Utility → Preset → Init</b>, confirm. You now have a plain, honest starting point.</li>
+        <li>Hold a key and slowly turn <b>Type</b> through every engine. Listen for the big families: smooth (Vanalog, Waveshaper), metallic (Two Op. FM), vocal (Speech, Vowel), textural (Noise, Granular-style engines).</li>
+        <li>Pick one engine you like. Now hold a key and sweep <b>Wave</b> fully left to right. Then <b>Timbre</b>. Then <b>Shape</b>.</li>
+        <li>Repeat step 3 on a totally different engine — notice the same three knobs now do completely different things. <span class="m">That's by design: they're macro controls, not fixed parameters.</span></li>
+      </ol>
+      <p class="listen"><b>What to listen for:</b> the moment a knob stops being "some knob" and becomes "the knob that adds growl on this engine." That mapping between hand and ear is the whole skill.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">T-02</span><span class="ttl">The filter is an instrument — cutoff &amp; resonance</span><span class="meta">5 min</span></summary>
+    <div class="body">
+      <p class="goal">Goal: internalize what cutoff and resonance do before you ever route modulation to them.</p>
+      <ol>
+        <li>From an Init patch, set Type to <b>Vanalog</b> and Wave toward saw (bright = lots of harmonics = lots for the filter to eat).</li>
+        <li>Hold a low note. Sweep <b>Cutoff</b> from fully open down to closed and back. <span class="m">This is "the wah."</span></li>
+        <li>Set Cutoff to 12 o'clock. Now raise <b>Resonance</b> step by step while re-sweeping Cutoff. Hear the whistle appear at the moving cutoff point.</li>
+        <li>Push Resonance near max and sweep slowly — the filter almost sings on its own. Pull it back to taste.</li>
+        <li>Now press the filter <b>Type</b> button: try the same sweep with <b>HPF</b> (sound gets thin from below) and <b>BPF</b> (nasal, radio-like).</li>
+      </ol>
+      <p class="listen"><b>What to listen for:</b> resonance doesn't add anything new — it emphasizes what's already at the cutoff. That's why it "squelches" when the cutoff moves.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">T-03</span><span class="ttl">First matrix routing — give yourself vibrato</span><span class="meta">10 min · the big one</span></summary>
+    <div class="body">
+      <p class="goal">Goal: make your first source → destination connection. Once this clicks, the whole matrix is yours.</p>
+      <ol>
+        <li>Start from any sound you like. Set the <b>LFO</b> to triangle shape, Rate around 9–10 o'clock (a gentle wobble speed).</li>
+        <li>Turn the <b>Matrix</b> knob until the cursor sits on the intersection of row <b>LFO</b> and column <b>Pitch</b>.</li>
+        <li><b>Click</b> the Matrix knob to select it, then turn to dial in a small amount, around <span class="m">+5 to +10</span>. Hold a note: vibrato.</li>
+        <li>Too seasick? Reduce the amount. Too slow? Raise LFO Rate. <span class="m">Amount = depth, Rate = speed.</span></li>
+        <li>Now move the cursor to <b>LFO → Cutoff</b> instead, amount ~+20, and slow the Rate way down: the tone breathes. Congratulations — you just built the pad trick from recipe 02.</li>
+        <li>Undo a routing anytime: select the intersection, click, dial the amount back to 0.</li>
+      </ol>
+      <p class="listen"><b>What to listen for:</b> the same LFO, routed to two different destinations, makes two totally different musical effects. Modulation = source × destination × amount. That's the formula for everything.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">T-04</span><span class="ttl">Play with pressure — expressive touch keys</span><span class="meta">10 min</span></summary>
+    <div class="body">
+      <p class="goal">Goal: use the touch keyboard's pressure sensing so the sound responds to how hard you press.</p>
+      <ol>
+        <li>Load your pad from recipe 02, or any sustained sound.</li>
+        <li>In the matrix, route <b>Press → Cutoff</b>, amount around <span class="m">+25</span>.</li>
+        <li>Hold a chord lightly, then slowly press harder into the keys. The sound blooms open under your fingers.</li>
+        <li>Add a second routing: <b>Press → Assign 1</b>. To assign the destination, hold the <b>Assign 1</b> button and wiggle the knob you want (try Wave). Now pressure morphs the oscillator too.</li>
+        <li>Try a negative amount on Press → Cutoff instead: pressing harder now darkens the sound — equally musical, opposite mood.</li>
+      </ol>
+      <p class="listen"><b>What to listen for:</b> the difference between a keyboard that plays notes and one that plays <i>gestures</i>. This is the MicroFreak's most underrated feature.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">T-05</span><span class="ttl">Self-playing machine — arp, sequencer, Spice &amp; Dice</span><span class="meta">15 min · most fun</span></summary>
+    <div class="body">
+      <p class="goal">Goal: build a groove that plays itself and mutates while you sculpt the sound with both hands.</p>
+      <ol>
+        <li>Load your bass stab from recipe 03. Press <b>Arp</b> and hold a 3–4 note chord: instant pattern. Try the <b>Up / Order / Random / Pattern</b> modes and <b>Oct</b> range 2.</li>
+        <li>Set <b>Rate</b> to a comfortable tempo (or Sync if you're clocking to other gear). Hold <b>Shift + Rate</b> for <b>Swing</b> — around 55–60% adds groove.</li>
+        <li>Press <b>Hold</b> so the arp keeps running hands-free.</li>
+        <li>Now the magic row: tap <b>Dice</b> to reshuffle the rhythm, and slide <b>Spice</b> up to decide how wild the variations get. Low Spice = subtle mutations, high Spice = barely your pattern anymore.</li>
+        <li>While it runs, perform with <b>Cutoff</b>, <b>Resonance</b>, and the <b>Bend</b> strip. Two hands, zero notes played, full track energy.</li>
+        <li>Bonus: switch from Arp to <b>Seq</b> (Shift + Arp|Seq), record a short phrase step by step, and do the same Spice &amp; Dice treatment to a melody you wrote.</li>
+      </ol>
+      <p class="listen"><b>What to listen for:</b> when a Dice roll surprises you with something better than what you programmed — save it. Half of electronic music is curated accidents.</p>
+    </div>
+  </details>
+  <details class="tut">
+    <summary><span class="num">T-06</span><span class="ttl">Build your own drum kit — kick, snare, hat</span><span class="meta">20 min · sound design</span></summary>
+    <div class="body">
+      <p class="goal">Goal: design three drum sounds from scratch and save them as presets. One honest thing first: the MicroFreak plays <b style="color:var(--ink)">one preset at a time</b>, so a "kit" here means three saved patches — we'll deal with playing them together in T-07. Drum design is the best envelope workout there is: drums are nothing but envelopes.</p>
+      <ol>
+        <li><b>Kick.</b> Init patch → Type <b>Vanalog</b>, Wave fully left (toward sine — pure low tone). Amp Mod ON. Attack min, Sustain zero, Decay/Rel ~9 o'clock. Octave down twice. <span class="m">Now the secret ingredient:</span> set the <b>Cycling Envelope</b> to Env mode, Rise minimum, Fall ~9 o'clock, and in the matrix route <b>CycEnv → Pitch</b> with a big positive amount (~+40). Each note now starts high and drops fast — that pitch-drop <i>is</i> the "boom." Tune the drop speed with Fall.</li>
+        <li>Tap a low key. Too clicky? Slightly raise Attack. Too boomy? Shorten Decay. Save it: hold <b>Save</b>, pick a slot, name it KICK.</li>
+        <li><b>Snare.</b> Init → Type <b>Noise</b> (the engine that blends noise with tone — turn Wave to set the mix, roughly half noise / half tone). Filter <b>BPF</b>, Cutoff ~1 o'clock, Resonance ~12. Attack min, Sustain zero, Decay/Rel ~9–10 o'clock. Route <b>CycEnv → Pitch</b> again but a smaller amount (~+15) for the snap. Save as SNARE.</li>
+        <li><b>Hi-hat.</b> Init → Type <b>Noise</b>, Wave fully toward pure noise. Filter <b>HPF</b>, Cutoff ~3 o'clock (only the sizzle survives). Attack min, Sustain zero, Decay/Rel almost minimum — a tick of air. Save as HAT. For an open hat, just lengthen Decay.</li>
+        <li>Play each kit piece across the keyboard and notice pitch still matters: a kick on a lower key hits deeper; hats up high get thinner. Pick your favorite key per drum — that choice is part of the kit.</li>
+      </ol>
+      <p class="listen"><b>What to listen for:</b> every drum is the same trick — noise or tone, a snappy amp envelope, and a fast pitch drop for punch. Once you hear that, you can "read" any drum machine sound by ear.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">T-07</span><span class="ttl">Record a drum pattern and combine it with bass</span><span class="meta">20 min · arrangement</span></summary>
+    <div class="body">
+      <p class="goal">Goal: sequence a beat, then get bass on top. Since the MicroFreak is one voice / one preset at a time, there are two paths: fake a whole kit inside one patch using the sequencer's automation lanes (pure MicroFreak), or record the drum loop and layer bass over it (the studio way). Do both.</p>
+      <ol>
+        <li><b>Path A — one-patch beat.</b> Load your KICK from T-06. Enter the sequencer: <b>Shift + Arp|Seq</b> until Seq is active, pick sequence A or B.</li>
+        <li>Record a pattern in step mode: press <b>Record</b>, then tap keys to fill steps — kick on your chosen low key on steps 1, 5, 9, 13 (a basic 4/4), and tap <b>Rest</b> (the dedicated silence key) for empty steps. A 16-step pattern is plenty.</li>
+        <li><span class="m">Now the trick that makes one patch sound like a kit:</span> the sequencer has <b>4 modulation lanes</b> that record knob motion per step. Start lane recording (hold Record while the sequence plays) and turn <b>Cutoff</b> + <b>Wave</b> only during the off-beat steps — closed/dark on kicks, bright/noisy on off-beats. Those bright noisy steps read as hats. One preset, but it grooves like a kit.</li>
+        <li>Add <b>Spice &amp; Dice</b> on top for variation, and swing (~57%) for pocket.</li>
+        <li><b>Path B — real layering.</b> Record 8 bars of your beat into anything that loops: your DAW, a phone recorder app, or a looper pedal. Even a rough phone recording works for jamming.</li>
+        <li>While the loop plays back, switch the MicroFreak to your <b>bass stab</b> (recipe 03) and play or sequence a bassline over the drums. Classic move: bass notes on the off-beats between kicks, so kick and bass never fight for the low end.</li>
+        <li>If you have a DAW: record the bass as a second track, then keep going — pads (recipe 02) as a third layer, and suddenly the one-voice MicroFreak has become a full track, one layer at a time. This overdub workflow is exactly how most MicroFreak tracks are made.</li>
+      </ol>
+      <p class="listen"><b>What to listen for:</b> in Path A, how automation per step changes the <i>identity</i> of each hit without changing the preset. In Path B, the moment kick and bass lock — if the low end sounds muddy, shift bass notes off the kick steps or pull the bass Cutoff down slightly.</p>
+    </div>
+  </details>
+</section>
+
+<section id="arpseq" class="wrap">
+  <div class="silk"><span>Arp &amp; Seq — from 0 to 100</span></div>
+  <p class="lead">The complete path from "what does this button do" to running the MicroFreak as a self-playing groove machine. Work through the levels in order; each one assumes the previous. The core distinction to hold onto the whole way: the <b style="color:var(--ink)">arpeggiator</b> generates patterns from what you're holding <i>right now</i>, the <b style="color:var(--ink)">sequencer</b> replays what you <i>recorded</i>.</p>
+
+  <details class="tut" open>
+    <summary><span class="num">LVL 0–15</span><span class="ttl">Concepts &amp; the buttons</span><span class="meta">arp vs seq</span></summary>
+    <div class="body">
+      <p class="goal">Goal: know exactly which mode you're in and what each control in the ARP/SEQ block does.</p>
+      <ol>
+        <li>The <b>Arp | Seq</b> button cycles the section: white label = Arp, blue label = Seq (blue text anywhere on the panel means "Shift function or second mode"). Off = plain keyboard.</li>
+        <li><b>Arp:</b> hold notes → the synth plays them one at a time in a pattern. Let go → it stops. Nothing is stored.</li>
+        <li><b>Seq:</b> a recorded phrase loops back exactly as you entered it, hands-free. Each preset stores <b>two sequences, A and B</b> — think verse and chorus.</li>
+        <li><b>Rate/Swing</b> sets the speed of both. <b>Oct | Mod</b> sets the arp's octave span (Arp mode) or selects modulation lanes (Seq mode) — same button, two lives.</li>
+        <li><b>Hold</b> latches arp notes so you can take your hands off; in Seq mode the same key becomes <b>Tie/Rest</b> for entering silences and held notes.</li>
+      </ol>
+      <p class="listen"><b>Checkpoint:</b> you can switch between Arp, Seq, and off without thinking, and you know why your held chord stops when you release keys in Arp but the Seq keeps going.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">LVL 15–35</span><span class="ttl">Arpeggiator basics — modes, octaves, hold</span><span class="meta">10 min</span></summary>
+    <div class="body">
+      <p class="goal">Goal: get musical results from the four arp modes and understand why note order and octave range matter.</p>
+      <ol>
+        <li>Load a pluck or bass sound (recipes 01/03 — short envelopes make arps readable). Activate <b>Arp</b>, hold a simple triad (e.g. C–E–G).</li>
+        <li>Cycle the modes: <b>Up</b> climbs low→high, repeat. <b>Order</b> plays notes in the order your fingers landed — re-press the chord with a different finger order and hear the melody change. <span class="m">Order is secretly a composition tool.</span></li>
+        <li><b>Random</b> picks from your held notes unpredictably — great for hats-like shimmer and IDM textures. <b>Pattern</b> generates a repeating random pattern from your notes; press Pattern again to roll a new one until you find a keeper.</li>
+        <li>Press <b>Oct</b> to widen the range to 2, 3, 4 octaves. A 1-octave Up arp is a bassline; the same notes at 3 octaves is an arpeggio cascade. Same fingers, different music.</li>
+        <li>Press <b>Hold</b>, release your hands. The arp keeps running. Now add or remove single notes while it plays — live chord editing. Press each held note again to remove it from the pattern.</li>
+      </ol>
+      <p class="listen"><b>Checkpoint:</b> hold one chord and, using only mode + octave + Hold, produce four recognizably different musical parts without moving your left hand.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">LVL 35–50</span><span class="ttl">Time feel — rate, sync, swing, gate</span><span class="meta">the groove level</span></summary>
+    <div class="body">
+      <p class="goal">Goal: control the rhythmic feel — the difference between a demo and a track.</p>
+      <ol>
+        <li>With an arp running, turn <b>Rate</b> freely. Unsynced, it's a smooth speed control — even musical as an effect (slow crawl to fast shimmer).</li>
+        <li>Now enable <b>Sync</b>. Rate snaps to musical divisions (1/4, 1/8, 1/16, triplets…). This is what you want 95% of the time, and it's mandatory when playing with other gear or a DAW.</li>
+        <li>Hold <b>Shift</b> and turn Rate: that's <b>Swing</b>, from 50% (robotic) up to 75% (drunk). The sweet spot for most grooves is 54–60% — every off-beat lands slightly late, and suddenly the pattern has a pocket.</li>
+        <li>Find the <b>gate length</b> setting in Utility: short gates = staccato, ticking, techno; long gates = notes blur legato into each other. Same pattern, opposite energy.</li>
+        <li>Clocking to the outside world: in Utility → MIDI, the MicroFreak can follow external clock (from a DAW or drum machine via USB/MIDI) or be the master. When following, Rate divisions stay locked to the incoming tempo.</li>
+      </ol>
+      <p class="listen"><b>Checkpoint:</b> take one 1/16 arp and, changing only swing and gate length, make it sound like (a) precise techno, (b) lazy hip-hop, (c) flowing ambient. If you can hear those three, you own this level.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">LVL 50–65</span><span class="ttl">Sequencer basics — recording A &amp; B</span><span class="meta">15 min</span></summary>
+    <div class="body">
+      <p class="goal">Goal: comfortably record phrases both step by step and live, with rests and ties, into both sequence slots.</p>
+      <ol>
+        <li>Switch to <b>Seq</b> (Shift + Arp|Seq), choose sequence <b>A</b>. Sequences can be up to <b>64 steps</b> long.</li>
+        <li><b>Step recording</b> (the composer's way): with the sequencer stopped, press <b>Record</b>. Each key you tap fills the next step. Wrong note? Keep going — you can re-record; sketching fast beats fixing slow.</li>
+        <li>Silence and length: tap <b>Tie/Rest</b> alone for an empty step (rest); hold a key and tap Tie/Rest to stretch that note across extra steps (tie). Rests are not gaps in your idea — they <i>are</i> the rhythm.</li>
+        <li>Press Record again to exit, press play — your phrase loops. Now record something contrasting into sequence <b>B</b> and practice switching A↔B in time: instant song sections.</li>
+        <li><b>Real-time recording</b> (the performer's way): start the sequence playing, press Record, and just play. Your timing is captured and quantized to the grid. Great for parts you can feel but can't spell out step by step.</li>
+        <li>While a sequence loops, the keyboard stays live — play over your own loop. With Paraphonic on, you can hold pad notes on top of a running line.</li>
+      </ol>
+      <p class="listen"><b>Checkpoint:</b> a 16-step bassline in A with at least four rests and one tied note, a variation in B, and you can flip between them without the loop stumbling.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">LVL 65–80</span><span class="ttl">Modulation lanes — sequences that turn knobs</span><span class="meta">the deep feature</span></summary>
+    <div class="body">
+      <p class="goal">Goal: use the 4 modulation lanes so the sequence doesn't just play notes — it performs the knobs too. This is what you already touched in T-07; now make it systematic.</p>
+      <ol>
+        <li>With a sequence playing, press <b>Record</b> and turn a knob — say Cutoff. The motion is captured per step into a <b>mod lane</b>. Stop recording; the sequence now replays your filter moves forever.</li>
+        <li>The <b>Oct | Mod</b> button (Seq mode) selects between the 4 lanes — the LEDs show which are in use. Four lanes = four different knobs automated at once: e.g. Cutoff + Wave + Resonance + Glide.</li>
+        <li>Per-step editing: while step-recording a lane, you can set a value for each step individually — hold the step's position and set the knob. Precise, plotted automation instead of a recorded gesture.</li>
+        <li>Musical recipes to try: <span class="m">Cutoff lane</span> opening every 4th step (pumping); <span class="m">Wave lane</span> morphing across 16 steps (evolving timbre); <span class="m">Glide lane</span> raised on just two steps (acid slides on those notes only); <span class="m">Resonance lane</span> spiking on the last step (a squelch that announces the loop).</li>
+        <li>To clear a lane you don't like, re-record over it, or hold the lane and clear it — a wrong automation is never a commitment.</li>
+      </ol>
+      <p class="listen"><b>Checkpoint:</b> a static 8-note sequence that, through mod lanes alone, evolves so much over the loop that a listener would swear you're performing it live.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">LVL 80–90</span><span class="ttl">Spice, Dice &amp; performance moves</span><span class="meta">controlled chaos</span></summary>
+    <div class="body">
+      <p class="goal">Goal: use randomness as an instrument, and perform a running pattern like a DJ performs a track.</p>
+      <ol>
+        <li>With any arp or sequence running: tap <b>Dice</b> — it rerolls the pattern's rhythmic DNA (gates, accents, timing variations). <b>Spice</b> sets how much of that reroll is applied: low = seasoning, high = mutation.</li>
+        <li>Performance loop: Dice → listen 2 bars → keep or Dice again. When a roll is magic, <b>lower Spice to lock the vibe in</b> and keep playing. Randomness proposes; you dispose.</li>
+        <li>Layer the physical controls: while the pattern runs, ride <b>Cutoff</b> with one hand and the <b>Bend strip</b> with the other. Tap <b>Oct</b> arrows to throw the whole pattern up or down an octave for instant "drop" moments.</li>
+        <li>Structure a live 4-minute jam: A-sequence 8 bars → raise Spice gradually → Dice at the transition → switch to B → pull Spice back. That arc — order, chaos, new order — is a complete piece of music.</li>
+        <li>Hear something better than what you wrote? <b>Save immediately</b> (hold Save). The preset stores its sequences, so a lucky Dice roll can become tomorrow's starting point.</li>
+      </ol>
+      <p class="listen"><b>Checkpoint:</b> record (on your phone, even) a 3-minute jam from one preset that has a beginning, a build, a turn, and an ending — no hands leaving the synth.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">LVL 90–100</span><span class="ttl">Expert corner — the seq as a modulation source</span><span class="meta">full circle</span></summary>
+    <div class="body">
+      <p class="goal">Goal: close the loop with the mod matrix — the arp/seq isn't just a note player, it's a modulation <i>source</i>, and that changes everything.</p>
+      <ol>
+        <li>Look at the matrix source rows: the bottom one is <b>Key/Arp</b>. It outputs the pitch of whatever the keyboard, arp, or sequencer is currently playing — as a modulation signal.</li>
+        <li>Route <b>Key/Arp → Cutoff</b> (moderate positive amount): now higher notes are automatically brighter — keyboard tracking, like acoustic instruments behave. Your arps instantly sound more organic.</li>
+        <li>Route <b>Key/Arp → Wave</b> or <b>→ Timbre</b>: every pitch in the sequence gets its own oscillator character. A single 8-note loop becomes 8 different voices taking turns.</li>
+        <li>Now stack the whole tower: sequence plays notes → mod lanes ride four knobs → Key/Arp routing colors each pitch → looping Cycling Envelope pulses the volume → LFO breathes the filter → Spice &amp; Dice mutate the rhythm. Six layers of automatic motion, one preset, zero hands. <span class="m">This — machines modulating machines — is the "freak" in MicroFreak.</span></li>
+        <li>Final exam: build a patch that plays itself for five minutes and stays interesting. Then delete one modulation layer at a time and listen to what disappears — the fastest ear-training for what each layer contributes.</li>
+      </ol>
+      <p class="listen"><b>Checkpoint:</b> you no longer think "arp section" and "matrix section" — you think in one system where notes, knobs, and randomness all modulate each other. That's 100.</p>
+    </div>
+  </details>
+</section>
+
+<section id="glossary" class="wrap">
+  <div class="silk"><span>Glossary — the lingo</span></div>
+  <p class="lead">Every term you'll meet on the MicroFreak (or any synth). Type to filter.</p>
+  <input class="gsearch" id="gsearch" type="search" placeholder="Search a term… e.g. resonance" aria-label="Search glossary">
+  <div id="glist"></div>
+</section>
+
+<section id="model" class="wrap">
+  <div class="silk"><span>The one-sentence mental model</span></div>
+  <div class="mantra">Almost everything on a synth boils down to one sentence: <b>an oscillator makes a tone, a filter darkens it, an envelope shapes it in time, and modulation moves any of those automatically.</b> Every fancy term on this page is just a detail of one of those four jobs.</div>
+</section>
+
+<footer>MicroFreak field guide · no cables were harmed</footer>
+
+<script>
+/* ---------- glossary data ---------- */
+const GLOSSARY=[
+["Sound basics",[
+["Pitch / frequency","How high or low a note is. Measured in Hz (vibrations per second) — higher Hz = higher note."],
+["Harmonics / overtones","Quieter \u201chidden\u201d tones stacked above the main note. More harmonics = brighter, buzzier sound."],
+["Timbre","The \u201ccolor\u201d of a sound — why a flute and a guitar playing the same note sound different."],
+["Octave / semitone","Octave = same note at double the frequency. Semitone = the smallest step between two keys."],
+["Patch / preset","A saved sound — all knob positions and settings stored together. The words are interchangeable."]
+]],
+["Oscillator — where sound is born",[
+["Oscillator (OSC)","The circuit that generates the raw tone. No oscillator, no sound. The MicroFreak's is digital."],
+["Waveform","The shape of the vibration. Sine = pure and soft, triangle = mellow, saw = bright and buzzy, square = hollow and woody."],
+["Wavetable","A stack of many waveforms you can sweep through smoothly — the tone morphs as you turn the knob."],
+["FM synthesis","One wave rapidly wiggling the pitch of another. Makes metallic, bell-like, aggressive tones."],
+["Granular","Chops sound into tiny grains and re-scatters them — clouds, textures, glitch."],
+["Unison / detune","Stacking slightly out-of-tune copies of the same note. Makes the sound thick and wide."],
+["Glide (portamento)","Notes slide smoothly into each other instead of jumping. Think theremin, or 303 acid lines."]
+]],
+["Filter — sculpting the tone",[
+["Filter","Removes some harmonics to reshape the tone — an ultra-powerful tone knob."],
+["Cutoff","The frequency where the filter starts cutting. Down = darker and muffled, up = brighter."],
+["Resonance","A volume boost right at the cutoff point. Adds a whistling, squelchy, \u201cacid\u201d character."],
+["LPF / BPF / HPF","Low-pass keeps the lows (the classic), high-pass keeps the highs (thin, airy), band-pass keeps only a middle slice (nasal)."],
+["Sweep","Moving the cutoff while a note plays — the classic \u201cwooaaah\u201d opening-up effect of dance music."]
+]],
+["Envelopes — shaping notes in time",[
+["Envelope / ADSR","A shape describing how a note evolves: Attack (fade-in), Decay (fall), Sustain (held level), Release (fade-out)."],
+["Attack","Time from key press to full volume. Fast = pluck or hit, slow = swelling pad."],
+["Decay / release","Decay = the drop after the initial peak. Release = how long sound lingers after you let go."],
+["Sustain","The level a note holds while the key stays pressed. It's a volume, not a time."],
+["Amp / VCA","The final volume stage. The envelope usually controls it — that's what makes notes start and stop."],
+["Cycling envelope","MicroFreak specialty: an envelope that can loop forever (Loop mode), acting like a fancy LFO."]
+]],
+["Modulation — making sound move",[
+["Modulation","One thing automatically turning a knob for you. It's what makes synth sounds feel alive instead of static."],
+["LFO","Low Frequency Oscillator — a wave too slow to hear, used to wiggle other parameters. Rate = wiggle speed."],
+["Source → destination","Source = who's turning the knob (LFO, envelope, key pressure). Destination = which knob gets turned (pitch, cutoff…)."],
+["Mod matrix","The routing grid connecting any source to any destination with an amount. The MicroFreak's patch bay."],
+["Vibrato / tremolo","Vibrato = LFO wiggling pitch (opera singer). Tremolo = LFO wiggling volume (surf guitar)."],
+["Pressure (aftertouch)","Pressing a held key harder to add expression — on the MicroFreak it can modulate anything via the matrix."],
+["Velocity","How hard you strike the key. Often mapped to loudness or brightness, like a real piano."]
+]],
+["Playing & sequencing",[
+["Mono / para / poly","Monophonic = one note at a time. Polyphonic = full chords. Paraphonic (the MicroFreak) = several notes sharing one filter."],
+["Arpeggiator (arp)","Hold a chord and the synth plays its notes one by one in a pattern — instant melodies."],
+["Sequencer / step","Records a looping phrase note by note. Each slot in the loop is a \u201cstep\u201d."],
+["Sync / BPM / swing","Sync locks tempo to a clock. BPM = beats per minute. Swing delays every other note for groove."],
+["Spice & Dice","MicroFreak-specific: Dice reshuffles the rhythm of your sequence, Spice sets how much variation is applied."],
+["MIDI","The universal language instruments use to talk — notes, tempo, knob movements. No audio, just instructions."]
+]]];
+
+const glist=document.getElementById('glist');
+GLOSSARY.forEach(([cat,terms])=>{
+  const d=document.createElement('div');d.className='gcat';
+  d.innerHTML='<h4>'+cat+'</h4>'+terms.map(([t,def])=>
+    '<dl class="gterm" data-k="'+(t+' '+def).toLowerCase()+'"><dt>'+t+'</dt><dd>'+def+'</dd></dl>').join('');
+  glist.appendChild(d);
+});
+document.getElementById('gsearch').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.gterm').forEach(el=>el.classList.toggle('hide',q&&!el.dataset.k.includes(q)));
+  document.querySelectorAll('.gcat').forEach(c=>{
+    c.classList.toggle('hide',q&&!c.querySelector('.gterm:not(.hide)'));
+  });
+});
+
+/* ---------- mini synth ---------- */
+let AC=null,master=null;
+function audio(){
+  if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();
+    master=AC.createGain();master.gain.value=0.5;
+    const comp=AC.createDynamicsCompressor();
+    master.connect(comp);comp.connect(AC.destination);}
+  if(AC.state==='suspended')AC.resume();
+  return AC;
+}
+const P={wave:'sawtooth',a:5,d:25,s:50,r:20,c:70,q:15};
+const $=id=>document.getElementById(id);
+const sliders={a:'p-a',d:'p-d',s:'p-s',r:'p-r',c:'p-c',q:'p-q'};
+const outs={a:'o-a',d:'o-d',s:'o-s',r:'o-r',c:'o-c',q:'o-q'};
+
+function cutoffHz(v){return 120*Math.pow(80,v/100);} /* 120 Hz .. ~9.6 kHz */
+
+function drawEnv(){
+  const x0=30,w=840,top=30,base=160;
+  const ax=x0+w*0.32*(P.a/100), dx=ax+w*0.22*(P.d/100), rx=x0+w*0.76;
+  const sy=base-(base-top)*(P.s/100);
+  const rex=rx+w*0.22*(P.r/100);
+  $('v-env').setAttribute('d','M'+x0+' '+base+' L'+ax.toFixed(0)+' '+top+' L'+dx.toFixed(0)+' '+sy.toFixed(0)+' L'+rx+' '+sy.toFixed(0)+' L'+Math.min(870,rex).toFixed(0)+' '+base);
+  const bt=base-(base-top)*(P.c/100);
+  $('v-band').setAttribute('y',bt.toFixed(0));
+  $('v-band').setAttribute('height',(base-bt).toFixed(0));
+  $('v-cutlabel').setAttribute('y',Math.max(top+14,bt+16).toFixed(0));
+}
+Object.keys(sliders).forEach(k=>{
+  $(sliders[k]).addEventListener('input',e=>{P[k]=+e.target.value;$(outs[k]).value=P[k];drawEnv();});
+});
+document.querySelectorAll('.wave-row button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.wave-row button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');P.wave=b.dataset.wave;
+  });
+});
+const PRESETS={
+  pluck:{wave:'square',a:1,d:15,s:0,r:8,c:85,q:22},
+  pad:{wave:'sawtooth',a:80,d:60,s:80,r:70,c:45,q:5},
+  bass:{wave:'sawtooth',a:2,d:25,s:55,r:12,c:88,q:30}
+};
+function applyPreset(name){
+  const p=PRESETS[name];if(!p)return;
+  Object.assign(P,p);
+  Object.keys(sliders).forEach(k=>{$(sliders[k]).value=P[k];$(outs[k]).value=P[k];});
+  document.querySelectorAll('.wave-row button').forEach(x=>x.classList.toggle('on',x.dataset.wave===P.wave));
+  document.querySelectorAll('.preset-row button').forEach(x=>x.classList.toggle('on',x.dataset.preset===name));
+  drawEnv();
+}
+document.querySelectorAll('[data-preset]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    applyPreset(b.dataset.preset);
+    if(!b.closest('.preset-row')){document.getElementById('playground').scrollIntoView({behavior:'smooth'});}
+  });
+});
+
+/* voices */
+const NOTES=[['C4',261.63,'A'],['C#4',277.18,'W'],['D4',293.66,'S'],['D#4',311.13,'E'],['E4',329.63,'D'],['F4',349.23,'F'],['F#4',369.99,'T'],['G4',392.0,'G'],['G#4',415.3,'Y'],['A4',440.0,'H'],['A#4',466.16,'U'],['B4',493.88,'J'],['C5',523.25,'K']];
+const kbd=$('kbd');const keyEls={};
+NOTES.forEach(([n,f,kc])=>{
+  const el=document.createElement('div');
+  el.className='key'+(n.includes('#')?' sharp':'');
+  el.textContent=kc;el.dataset.note=n;
+  el.setAttribute('role','button');el.setAttribute('aria-label','Play note '+n);el.tabIndex=0;
+  kbd.appendChild(el);keyEls[n]={el,f};
+});
+const active={};
+function noteOn(n){
+  if(active[n])return;
+  const ctx=audio(),now=ctx.currentTime,f=keyEls[n].f;
+  const bassMode=document.querySelector('.preset-row button.on')?.dataset.preset==='bass';
+  const osc=ctx.createOscillator();osc.type=P.wave;osc.frequency.value=bassMode?f/2:f;
+  const flt=ctx.createBiquadFilter();flt.type='lowpass';
+  flt.frequency.value=cutoffHz(P.c);flt.Q.value=P.q/8;
+  const g=ctx.createGain();g.gain.value=0;
+  osc.connect(flt);flt.connect(g);g.connect(master);
+  const aT=0.002+2.2*Math.pow(P.a/100,2), dT=0.03+2.5*Math.pow(P.d/100,2), sL=Math.pow(P.s/100,1.5)*0.85;
+  g.gain.setValueAtTime(0,now);
+  g.gain.linearRampToValueAtTime(0.85,now+aT);
+  g.gain.setTargetAtTime(sL,now+aT,Math.max(0.02,dT/3));
+  /* small filter-envelope for punch */
+  const fBase=cutoffHz(P.c);
+  flt.frequency.setValueAtTime(Math.min(12000,fBase*1.8),now);
+  flt.frequency.setTargetAtTime(fBase,now+aT,0.12);
+  osc.start(now);
+  active[n]={osc,g,flt};
+  keyEls[n].el.classList.add('held');
+}
+function noteOff(n){
+  const v=active[n];if(!v)return;
+  const now=AC.currentTime,rT=0.02+3*Math.pow(P.r/100,2);
+  v.g.gain.cancelScheduledValues(now);
+  v.g.gain.setValueAtTime(v.g.gain.value,now);
+  v.g.gain.setTargetAtTime(0,now,Math.max(0.015,rT/4));
+  v.osc.stop(now+rT+0.4);
+  delete active[n];
+  keyEls[n].el.classList.remove('held');
+}
+Object.keys(keyEls).forEach(n=>{
+  const el=keyEls[n].el;
+  el.addEventListener('pointerdown',e=>{e.preventDefault();noteOn(n);});
+  el.addEventListener('pointerup',()=>noteOff(n));
+  el.addEventListener('pointerleave',()=>noteOff(n));
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();noteOn(n);}});
+  el.addEventListener('keyup',e=>{if(e.key==='Enter'||e.key===' ')noteOff(n);});
+});
+const KEYMAP={};NOTES.forEach(([n,f,kc])=>KEYMAP[kc.toLowerCase()]=n);
+window.addEventListener('keydown',e=>{
+  if(e.repeat||e.target.tagName==='INPUT')return;
+  const n=KEYMAP[e.key.toLowerCase()];if(n)noteOn(n);
+});
+window.addEventListener('keyup',e=>{
+  const n=KEYMAP[e.key.toLowerCase()];if(n)noteOff(n);
+});
+drawEnv();
+</script>
+</body>
+</html>
