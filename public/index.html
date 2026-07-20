@@ -18,33 +18,45 @@ html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
 body{background:var(--panel-deep);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65}
 .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+[hidden]{display:none!important}
 
 /* silkscreen section labels — like the panel dividers */
 .silk{display:flex;align-items:center;gap:14px;margin:0 0 28px}
 .silk::before,.silk::after{content:"";flex:1;height:1px;background:var(--panel-line)}
 .silk span{font-family:var(--mono);font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--ink-dim);white-space:nowrap}
 
-/* nav */
-nav{position:sticky;top:0;z-index:50;background:rgba(23,25,29,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--panel-line)}
+/* top-level tabs */
+.tabbar{position:sticky;top:0;z-index:60;background:rgba(12,13,15,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--panel-line)}
+.tabbar .wrap{display:flex;gap:2px;padding:0 20px;overflow-x:auto}
+.tb{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;background:transparent;border:0;border-bottom:2px solid transparent;color:var(--ink-faint);padding:15px 18px;cursor:pointer;white-space:nowrap;transition:color .15s}
+.tb:hover{color:var(--ink-dim)}
+.tb.on{color:var(--orange-hi);border-bottom-color:var(--orange)}
+.tb .n{color:var(--ink-faint);margin-right:7px;font-size:10px}
+.tb.on .n{color:var(--orange)}
+
+/* sub nav */
+nav{position:sticky;top:50px;z-index:50;background:rgba(23,25,29,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--panel-line)}
 nav .wrap{display:flex;gap:4px;overflow-x:auto;padding:10px 20px}
 nav a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim);text-decoration:none;padding:6px 12px;border-radius:4px;white-space:nowrap}
 nav a:hover,nav a:focus-visible{color:var(--orange-hi);background:var(--panel)}
 a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
 /* hero */
-header{padding:64px 0 48px;text-align:center}
+header.hero{padding:56px 0 44px;text-align:center}
 .oled{display:inline-block;background:var(--oled);border:1px solid var(--panel-line);border-radius:6px;padding:14px 26px;margin-bottom:22px;box-shadow:inset 0 0 24px rgba(242,240,234,.04)}
 .oled .line1{font-family:var(--mono);font-size:12px;letter-spacing:.3em;color:var(--ink-faint);text-transform:uppercase}
 .oled .line2{font-family:var(--mono);font-size:26px;letter-spacing:.08em;color:var(--oled-glow);margin-top:4px}
 .oled .cursor{display:inline-block;width:11px;height:22px;background:var(--oled-glow);vertical-align:-3px;animation:blink 1.1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
-header p.sub{color:var(--ink-dim);max-width:560px;margin:0 auto;font-size:15px}
-header .grain{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--orange);margin-top:14px;text-transform:uppercase}
+header.hero p.sub{color:var(--ink-dim);max-width:600px;margin:0 auto;font-size:15px}
+header.hero .grain{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--orange);margin-top:14px;text-transform:uppercase}
 
 section{padding:44px 0}
+/* clear the sticky tabbar + subnav when jumping to an anchor or a lesson */
+section[data-tab],details.tut{scroll-margin-top:106px}
 h2.visually-hidden,.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 h3{font-size:17px;font-weight:600;margin-bottom:10px;color:var(--ink)}
-p.lead{color:var(--ink-dim);font-size:15px;max-width:640px;margin-bottom:26px}
+p.lead{color:var(--ink-dim);font-size:15px;max-width:660px;margin-bottom:26px}
 
 /* signal flow svg */
 .flow-card{background:var(--panel);border:1px solid var(--panel-line);border-radius:10px;padding:22px}
@@ -74,11 +86,14 @@ input[type=range]{width:100%;appearance:none;height:4px;border-radius:2px;backgr
 input[type=range]::-webkit-slider-thumb{appearance:none;width:20px;height:20px;border-radius:50%;background:var(--orange);border:3px solid var(--panel-deep);cursor:pointer}
 input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--orange);border:3px solid var(--panel-deep);cursor:pointer}
 .wave-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}
-.wave-row button,.preset-row button{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:transparent;border:1px solid var(--panel-line);color:var(--ink-dim);padding:8px 14px;border-radius:5px;cursor:pointer;transition:all .15s}
-.wave-row button:hover,.preset-row button:hover{border-color:var(--ink-dim);color:var(--ink)}
+.wave-row button,.preset-row button,.oct-row button{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:transparent;border:1px solid var(--panel-line);color:var(--ink-dim);padding:8px 14px;border-radius:5px;cursor:pointer;transition:all .15s}
+.wave-row button:hover,.preset-row button:hover,.oct-row button:hover{border-color:var(--ink-dim);color:var(--ink)}
 .wave-row button.on{border-color:var(--orange);color:var(--orange-hi);background:rgba(232,98,45,.1)}
-.preset-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.preset-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
 .preset-row button.on{border-color:var(--blue);color:var(--blue);background:rgba(126,182,232,.08)}
+.oct-row{display:flex;gap:8px;align-items:center;margin-left:auto}
+.oct-row span{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+.oct-row output{font-family:var(--mono);font-size:11px;color:var(--orange-hi);min-width:22px;text-align:center}
 #envview{width:100%;height:auto;display:block;background:var(--oled);border:1px solid var(--panel-line);border-radius:8px;margin-bottom:20px}
 
 /* touch keyboard */
@@ -113,7 +128,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 .tryit button{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:rgba(232,98,45,.12);border:1px solid var(--orange);color:var(--orange-hi);padding:8px 16px;border-radius:5px;cursor:pointer}
 .tryit button:hover{background:rgba(232,98,45,.22)}
 
-/* tutorials */
+/* tutorials + lessons (shared) */
 .tut{background:var(--panel);border:1px solid var(--panel-line);border-radius:12px;margin-bottom:14px;overflow:hidden}
 .tut summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:14px;padding:18px 22px;flex-wrap:wrap}
 .tut summary::-webkit-details-marker{display:none}
@@ -123,14 +138,48 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 .tut .meta{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;margin-left:auto}
 .tut .body{padding:0 22px 20px;border-top:1px solid var(--panel-line)}
 .tut .goal{font-size:13.5px;color:var(--ink-dim);margin:14px 0 16px}
-.tut ol{margin:0 0 0 20px;display:flex;flex-direction:column;gap:9px}
-.tut ol li{font-size:14px;color:var(--ink)}
-.tut ol li b{color:var(--orange-hi);font-weight:600}
-.tut ol li .m{font-family:var(--mono);font-size:12px;color:var(--blue)}
+.tut .txt{font-size:14px;color:var(--ink-dim);margin:0 0 13px}
+.tut .txt b{color:var(--ink);font-weight:600}
+.tut .txt code{font-family:var(--mono);font-size:12.5px;color:var(--orange-hi);background:var(--panel-deep);border-radius:3px;padding:1px 5px}
+.tut ol,.tut ul{margin:0 0 0 20px;display:flex;flex-direction:column;gap:9px}
+.tut ol li,.tut ul li{font-size:14px;color:var(--ink)}
+.tut ol li b,.tut ul li b{color:var(--orange-hi);font-weight:600}
+.tut ol li .m,.tut ul li .m{font-family:var(--mono);font-size:12px;color:var(--blue)}
 .tut .listen{font-size:13.5px;color:var(--ink-dim);border-left:2px solid var(--blue);padding-left:12px;margin-top:16px}
 .tut .listen b{color:var(--blue);font-weight:600}
 .tut[open] summary .num::after{content:" ▾"}
 .tut:not([open]) summary .num::after{content:" ▸"}
+
+/* theory: theme banners */
+.theme{margin:34px 0 18px;padding:16px 20px;background:linear-gradient(90deg,rgba(232,98,45,.10),transparent 70%);border-left:3px solid var(--orange);border-radius:0 8px 8px 0}
+.theme .tn{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--orange)}
+.theme h3{font-size:19px;margin:5px 0 5px}
+.theme p{font-size:13.5px;color:var(--ink-dim);max-width:660px;margin:0}
+
+/* theory: playable examples */
+.ex-lab{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin:18px 0 9px}
+.ex-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px}
+button.ex{font-family:var(--mono);font-size:11px;letter-spacing:.05em;background:rgba(126,182,232,.07);border:1px solid rgba(126,182,232,.35);color:var(--blue);padding:7px 12px;border-radius:5px;cursor:pointer;transition:all .12s}
+button.ex:hover{background:rgba(126,182,232,.18);border-color:var(--blue)}
+button.ex.playing{background:rgba(232,98,45,.2);border-color:var(--orange);color:var(--orange-hi)}
+button.ex::before{content:"▸ ";opacity:.7}
+.ex-note{font-size:12.5px;color:var(--ink-faint);margin-top:9px}
+
+/* theory: mini keyboard */
+.mini{display:flex;gap:1px;height:52px;margin:14px 0 2px;background:var(--oled);border:1px solid var(--panel-line);border-radius:6px;padding:5px}
+.mk{flex:1;border-radius:0 0 3px 3px;background:#2b2f35;position:relative;transition:background .06s}
+.mk.bk{background:#15171a}
+.mk.on{background:var(--orange);box-shadow:0 0 9px rgba(232,98,45,.55)}
+.mk[data-lab]::after{content:attr(data-lab);position:absolute;bottom:2px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:7.5px;color:var(--ink-faint)}
+.mk.on[data-lab]::after{color:#2b1608}
+.mini-cap{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+
+/* theory: vocabulary */
+.vocab{margin:20px 0 2px;border-top:1px solid var(--panel-line);padding-top:15px}
+.vocab h5{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:11px}
+.vocab dl{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;align-items:baseline;margin:0}
+.vocab dt{font-size:13px;font-weight:600;color:var(--blue)}
+.vocab dd{font-size:13px;color:var(--ink-dim);margin:0}
 
 /* glossary */
 .gsearch{width:100%;background:var(--panel);border:1px solid var(--panel-line);border-radius:8px;color:var(--ink);font-size:15px;padding:12px 16px;margin-bottom:18px;font-family:var(--sans)}
@@ -139,41 +188,68 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 .gcat h4{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--panel-line)}
 .gterm{display:flex;gap:14px;padding:9px 10px;border-radius:6px;align-items:baseline}
 .gterm:hover{background:var(--panel)}
-.gterm dt{font-size:13.5px;font-weight:600;min-width:150px;flex-shrink:0;color:var(--ink)}
+.gterm dt{font-size:13.5px;font-weight:600;min-width:170px;flex-shrink:0;color:var(--ink)}
 .gterm dd{font-size:13.5px;color:var(--ink-dim)}
-.gterm.hide{display:none}
-.gcat.hide{display:none}
+.gterm.hide,.gcat.hide{display:none}
 
 /* mental model + footer */
 .mantra{background:var(--panel);border:1px solid var(--panel-line);border-left:3px solid var(--orange);border-radius:10px;padding:22px 24px;font-size:16px;color:var(--ink)}
 .mantra b{color:var(--orange-hi)}
 footer{padding:44px 0 60px;text-align:center;color:var(--ink-faint);font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase}
-@media (max-width:600px){.gterm{flex-direction:column;gap:2px}.gterm dt{min-width:0}header{padding:44px 0 32px}.oled .line2{font-size:20px}}
+@media (max-width:600px){
+  .gterm{flex-direction:column;gap:2px}.gterm dt{min-width:0}
+  header.hero{padding:40px 0 30px}.oled .line2{font-size:19px}
+  .vocab dl{grid-template-columns:1fr;gap:2px}.vocab dd{margin-bottom:8px}
+  nav{top:48px}.tb{padding:14px 12px;font-size:11px}
+}
 </style>
 </head>
 <body>
 
-<nav aria-label="Sections"><div class="wrap">
+<div class="tabbar"><div class="wrap" role="tablist" aria-label="Guide sections">
+  <button class="tb on" data-tab="mf" role="tab" aria-selected="true"><span class="n">01</span>MicroFreak</button>
+  <button class="tb" data-tab="pg" role="tab" aria-selected="false"><span class="n">02</span>Playground</button>
+  <button class="tb" data-tab="th" role="tab" aria-selected="false"><span class="n">03</span>Music theory</button>
+</div></div>
+
+<nav class="subnav" data-tab="mf" aria-label="MicroFreak sections"><div class="wrap">
 <a href="#flow">Signal flow</a>
 <a href="#panel">The panel</a>
-<a href="#playground">Playground</a>
 <a href="#recipes">Patch recipes</a>
 <a href="#tutorials">Tutorials</a>
 <a href="#arpseq">Arp &amp; Seq 0→100</a>
-<a href="#glossary">Glossary</a>
 <a href="#model">Mental model</a>
+<a href="#glossary">Glossary ↗</a>
 </div></nav>
 
-<header class="wrap">
+<nav class="subnav" data-tab="pg" hidden aria-label="Playground sections"><div class="wrap">
+<a href="#playground">The synth</a>
+<a href="#pg-how">How it maps to the hardware</a>
+<a href="#pg-try">Things to try</a>
+</div></nav>
+
+<nav class="subnav" data-tab="th" hidden aria-label="Music theory sections"><div class="wrap">
+<a href="#th-intro">Start here</a>
+<a href="#th-1">1 · Foundations</a>
+<a href="#th-2">2 · Scales &amp; keys</a>
+<a href="#th-3">3 · Harmony</a>
+<a href="#th-4">4 · Line &amp; voice</a>
+<a href="#th-5">5 · Making music</a>
+<a href="#glossary">Glossary</a>
+</div></nav>
+
+<header class="hero wrap">
   <div class="oled">
-    <div class="line1">Preset 001</div>
+    <div class="line1" id="oled-line">Preset 001 · MicroFreak</div>
     <div class="line2">MicroFreak field guide<span class="cursor"></span></div>
   </div>
-  <p class="sub">Everything you need to stop nodding along and start actually understanding your synth — the panel, the vocabulary, and three sounds you can build tonight. Turn your volume on: the playground below makes real sound.</p>
+  <p class="sub" id="hero-sub">Everything you need to stop nodding along and start actually understanding your synth — the panel, the vocabulary, and three sounds you can build tonight. Turn your volume on: the playground makes real sound.</p>
   <div class="grain">)) grain de folie ((</div>
 </header>
 
-<section id="flow" class="wrap">
+<!-- ═══════════════════════ TAB 01 · MICROFREAK ═══════════════════════ -->
+
+<section id="flow" class="wrap" data-tab="mf">
   <div class="silk"><span>Signal flow</span></div>
   <p class="lead">One idea explains the whole machine: sound moves left to right through three stages, while the modulators underneath reach up and turn the knobs for you. Click a block to jump to its explanation.</p>
   <div class="flow-card">
@@ -208,7 +284,7 @@ footer{padding:44px 0 60px;text-align:center;color:var(--ink-faint);font-family:
   </div>
 </section>
 
-<section id="panel" class="wrap">
+<section id="panel" class="wrap" data-tab="mf">
   <div class="silk"><span>The panel, section by section</span></div>
   <div class="grid">
     <div class="card"><span class="tag osc">Sound source</span><h4>Digital oscillator</h4><p><b>Type</b> picks the engine (wavetable, FM, granular, virtual analog…); <b>Wave</b>, <b>Timbre</b> and <b>Shape</b> morph its character — their exact job changes per engine. <b>Glide</b> makes notes slide into each other. This section decides whether you get a soft flute or a screaming FM lead.</p></div>
@@ -222,44 +298,7 @@ footer{padding:44px 0 60px;text-align:center;color:var(--ink-faint);font-family:
   </div>
 </section>
 
-<section id="playground" class="wrap">
-  <div class="silk"><span>Playground — hear it</span></div>
-  <p class="lead">A miniature MicroFreak in your browser: one oscillator → one low-pass filter → one envelope, exactly the signal flow above. Move a slider, play a key, hear the difference. This is the fastest way to make the vocabulary stick.</p>
-  <div class="play">
-    <div class="wave-row" role="group" aria-label="Oscillator waveform">
-      <button data-wave="sawtooth" class="on">Saw</button>
-      <button data-wave="square">Square</button>
-      <button data-wave="triangle">Triangle</button>
-      <button data-wave="sine">Sine</button>
-    </div>
-    <div class="play-controls">
-      <div class="ctl"><label>Attack <output id="o-a">5</output></label><input type="range" id="p-a" min="1" max="100" value="5"></div>
-      <div class="ctl"><label>Decay <output id="o-d">25</output></label><input type="range" id="p-d" min="1" max="100" value="25"></div>
-      <div class="ctl"><label>Sustain <output id="o-s">50</output></label><input type="range" id="p-s" min="0" max="100" value="50"></div>
-      <div class="ctl"><label>Release <output id="o-r">20</output></label><input type="range" id="p-r" min="1" max="100" value="20"></div>
-      <div class="ctl"><label>Cutoff <output id="o-c">70</output></label><input type="range" id="p-c" min="5" max="100" value="70"></div>
-      <div class="ctl"><label>Resonance <output id="o-q">15</output></label><input type="range" id="p-q" min="0" max="100" value="15"></div>
-    </div>
-    <div class="preset-row" role="group" aria-label="Presets">
-      <button data-preset="pluck">Pluck</button>
-      <button data-preset="pad">Pad</button>
-      <button data-preset="bass">Bass stab</button>
-    </div>
-    <svg id="envview" viewBox="0 0 900 190" aria-label="Envelope curve and filter brightness band">
-      <rect id="v-band" x="30" y="60" width="840" height="100" rx="6" fill="rgba(99,214,176,.14)"/>
-      <line x1="30" y1="160" x2="870" y2="160" stroke="#3a3f47"/>
-      <path id="v-env" d="" fill="none" stroke="#e8622d" stroke-width="2.5" stroke-linejoin="round"/>
-      <text x="30" y="180" fill="#6b7078" font-size="11" font-family="monospace">KEY DOWN</text>
-      <text x="870" y="180" fill="#6b7078" font-size="11" font-family="monospace" text-anchor="end">KEY UP → RELEASE</text>
-      <text id="v-cutlabel" x="862" y="76" fill="#63d6b0" font-size="11" font-family="monospace" text-anchor="end">FILTER OPEN</text>
-    </svg>
-    <div class="kbd" id="kbd" aria-label="Touch keyboard — play with mouse, touch, or keys A W S E D F T G Y H U J K"></div>
-    <p class="hint">Play with your computer keyboard too: <kbd>A</kbd> <kbd>W</kbd> <kbd>S</kbd> <kbd>E</kbd> <kbd>D</kbd> <kbd>F</kbd> <kbd>T</kbd> <kbd>G</kbd> <kbd>Y</kbd> <kbd>H</kbd> <kbd>U</kbd> <kbd>J</kbd> <kbd>K</kbd> — like the MicroFreak's touch keys. Sound starts after your first click (browser rule).</p>
-    <p class="hint" id="whattolisten">Try this: set Attack to 90 and hold a key — the note swells in like a pad. Now Attack 1, Sustain 0, short Decay — every note is a pluck. Then sweep Cutoff up and down while holding a chord.</p>
-  </div>
-</section>
-
-<section id="recipes" class="wrap">
+<section id="recipes" class="wrap" data-tab="mf">
   <div class="silk"><span>Three patch recipes</span></div>
   <p class="lead">Knob positions are given as clock positions: 7 o'clock = fully left (minimum), 12 = middle, 5 o'clock = fully right (maximum). Start each patch from an initialized preset (Utility → Preset → Init). And remember: if a patch is silent, check <b style="color:var(--ink)">Amp Mod is ON</b>.</p>
 
@@ -323,7 +362,7 @@ footer{padding:44px 0 60px;text-align:center;color:var(--ink-faint);font-family:
   </div>
 </section>
 
-<section id="tutorials" class="wrap">
+<section id="tutorials" class="wrap" data-tab="mf">
   <div class="silk"><span>Tutorials &amp; examples</span></div>
   <p class="lead">Seven hands-on exercises, easiest first. Each takes 5–20 minutes at the synth. Do them in order — every one builds on the vocabulary of the previous. Click a tutorial to expand it.</p>
 
@@ -402,6 +441,7 @@ footer{padding:44px 0 60px;text-align:center;color:var(--ink-faint);font-family:
       <p class="listen"><b>What to listen for:</b> when a Dice roll surprises you with something better than what you programmed — save it. Half of electronic music is curated accidents.</p>
     </div>
   </details>
+
   <details class="tut">
     <summary><span class="num">T-06</span><span class="ttl">Build your own drum kit — kick, snare, hat</span><span class="meta">20 min · sound design</span></summary>
     <div class="body">
@@ -435,7 +475,7 @@ footer{padding:44px 0 60px;text-align:center;color:var(--ink-faint);font-family:
   </details>
 </section>
 
-<section id="arpseq" class="wrap">
+<section id="arpseq" class="wrap" data-tab="mf">
   <div class="silk"><span>Arp &amp; Seq — from 0 to 100</span></div>
   <p class="lead">The complete path from "what does this button do" to running the MicroFreak as a self-playing groove machine. Work through the levels in order; each one assumes the previous. The core distinction to hold onto the whole way: the <b style="color:var(--ink)">arpeggiator</b> generates patterns from what you're holding <i>right now</i>, the <b style="color:var(--ink)">sequencer</b> replays what you <i>recorded</i>.</p>
 
@@ -546,17 +586,1151 @@ footer{padding:44px 0 60px;text-align:center;color:var(--ink-faint);font-family:
   </details>
 </section>
 
-<section id="glossary" class="wrap">
-  <div class="silk"><span>Glossary — the lingo</span></div>
-  <p class="lead">Every term you'll meet on the MicroFreak (or any synth). Type to filter.</p>
-  <input class="gsearch" id="gsearch" type="search" placeholder="Search a term… e.g. resonance" aria-label="Search glossary">
-  <div id="glist"></div>
-</section>
-
-<section id="model" class="wrap">
+<section id="model" class="wrap" data-tab="mf">
   <div class="silk"><span>The one-sentence mental model</span></div>
   <div class="mantra">Almost everything on a synth boils down to one sentence: <b>an oscillator makes a tone, a filter darkens it, an envelope shapes it in time, and modulation moves any of those automatically.</b> Every fancy term on this page is just a detail of one of those four jobs.</div>
 </section>
+
+<!-- ═══════════════════════ TAB 02 · PLAYGROUND ═══════════════════════ -->
+
+<section id="playground" class="wrap" data-tab="pg">
+  <div class="silk"><span>Playground — hear it</span></div>
+  <p class="lead">A miniature MicroFreak in your browser: one oscillator → one low-pass filter → one envelope, exactly the signal flow from tab 01. Move a slider, play a key, hear the difference. Every playable example in the music theory tab plays through <i>this</i> synth — so whatever you dial in here is the voice your scales and chords will speak with.</p>
+  <div class="play">
+    <div class="wave-row" role="group" aria-label="Oscillator waveform">
+      <button data-wave="sawtooth" class="on">Saw</button>
+      <button data-wave="square">Square</button>
+      <button data-wave="triangle">Triangle</button>
+      <button data-wave="sine">Sine</button>
+    </div>
+    <div class="play-controls">
+      <div class="ctl"><label>Attack <output id="o-a">5</output></label><input type="range" id="p-a" min="1" max="100" value="5"></div>
+      <div class="ctl"><label>Decay <output id="o-d">25</output></label><input type="range" id="p-d" min="1" max="100" value="25"></div>
+      <div class="ctl"><label>Sustain <output id="o-s">50</output></label><input type="range" id="p-s" min="0" max="100" value="50"></div>
+      <div class="ctl"><label>Release <output id="o-r">20</output></label><input type="range" id="p-r" min="1" max="100" value="20"></div>
+      <div class="ctl"><label>Cutoff <output id="o-c">70</output></label><input type="range" id="p-c" min="5" max="100" value="70"></div>
+      <div class="ctl"><label>Resonance <output id="o-q">15</output></label><input type="range" id="p-q" min="0" max="100" value="15"></div>
+    </div>
+    <div class="preset-row" role="group" aria-label="Presets">
+      <button data-preset="pluck">Pluck</button>
+      <button data-preset="pad">Pad</button>
+      <button data-preset="bass">Bass stab</button>
+      <div class="oct-row"><span>Octave</span><button id="oct-dn" aria-label="Octave down">−</button><output id="oct-val">0</output><button id="oct-up" aria-label="Octave up">+</button></div>
+    </div>
+    <svg id="envview" viewBox="0 0 900 190" aria-label="Envelope curve and filter brightness band">
+      <rect id="v-band" x="30" y="60" width="840" height="100" rx="6" fill="rgba(99,214,176,.14)"/>
+      <line x1="30" y1="160" x2="870" y2="160" stroke="#3a3f47"/>
+      <path id="v-env" d="" fill="none" stroke="#e8622d" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="30" y="180" fill="#6b7078" font-size="11" font-family="monospace">KEY DOWN</text>
+      <text x="870" y="180" fill="#6b7078" font-size="11" font-family="monospace" text-anchor="end">KEY UP → RELEASE</text>
+      <text id="v-cutlabel" x="862" y="76" fill="#63d6b0" font-size="11" font-family="monospace" text-anchor="end">FILTER OPEN</text>
+    </svg>
+    <div class="kbd" id="kbd" aria-label="Touch keyboard — play with mouse, touch, or keys A W S E D F T G Y H U J K"></div>
+    <p class="hint">Play with your computer keyboard too: <kbd>A</kbd> <kbd>W</kbd> <kbd>S</kbd> <kbd>E</kbd> <kbd>D</kbd> <kbd>F</kbd> <kbd>T</kbd> <kbd>G</kbd> <kbd>Y</kbd> <kbd>H</kbd> <kbd>U</kbd> <kbd>J</kbd> <kbd>K</kbd> — like the MicroFreak's touch keys. <kbd>Z</kbd> / <kbd>X</kbd> shift the octave. Sound starts after your first click (browser rule).</p>
+    <p class="hint" id="whattolisten">Try this: set Attack to 90 and hold a key — the note swells in like a pad. Now Attack 1, Sustain 0, short Decay — every note is a pluck. Then sweep Cutoff up and down while holding a chord.</p>
+  </div>
+</section>
+
+<section id="pg-how" class="wrap" data-tab="pg">
+  <div class="silk"><span>How it maps to the hardware</span></div>
+  <p class="lead">This toy is deliberately smaller than the real thing. Knowing exactly where the map ends is part of understanding the territory.</p>
+  <div class="grid">
+    <div class="card"><span class="tag osc">Same idea</span><h4>Waveform ↔ Type + Wave</h4><p>Four raw waveforms stand in for the MicroFreak's dozen-plus engines. The <b>principle</b> transfers exactly: more angular wave = more harmonics = brighter, and more for the filter to chew on. Saw is the greediest, sine has nothing but the fundamental.</p></div>
+    <div class="card"><span class="tag filt">Same idea</span><h4>Cutoff / Resonance ↔ the analog filter</h4><p>A real low-pass filter with a resonant peak, same as the hardware's LPF mode. There's also a small built-in filter envelope so notes have punch — that's the hardware's <b>Filter Amt</b> baked in at a fixed amount.</p></div>
+    <div class="card"><span class="tag mod">Same idea</span><h4>A · D · S · R ↔ the envelope</h4><p>Identical concept, and the visualization above draws the exact shape you've dialled in. The green band shows how far open the filter sits. Attack and Decay are time; Sustain is a level, not a time — the single most common beginner mix-up.</p></div>
+    <div class="card"><span class="tag perf">Missing here</span><h4>What the real one has that this doesn't</h4><p>No mod matrix, no LFO, no cycling envelope, no pressure sensing, no arp/seq, no Spice &amp; Dice, no paraphony beyond simply holding several keys. Those are the parts you have to learn on the hardware — tabs 01's tutorials cover them.</p></div>
+  </div>
+</section>
+
+<section id="pg-try" class="wrap" data-tab="pg">
+  <div class="silk"><span>Things to try right now</span></div>
+  <p class="lead">Five two-minute experiments. Each one isolates a single variable, which is the only reliable way to learn what a control actually does.</p>
+
+  <details class="tut" open>
+    <summary><span class="num">P-01</span><span class="ttl">Sustain is a level, not a time</span><span class="meta">2 min</span></summary>
+    <div class="body">
+      <p class="txt">Set Attack 1, Decay 30, Release 20. Now hold a key down for a long time and change only <b>Sustain</b>.</p>
+      <ul>
+        <li>Sustain 0 → the note dies while your finger is still down. That's a <b>pluck</b>.</li>
+        <li>Sustain 100 → the note never drops; Decay does nothing audible at all.</li>
+        <li>Sustain 50 → the note falls to half loudness and stays there until you let go.</li>
+      </ul>
+      <p class="listen"><b>Why it matters:</b> Decay and Sustain only make sense together. Decay is <i>how fast</i> it falls, Sustain is <i>how far</i> it falls to. When Sustain is maxed, Decay is switched off in practice.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">P-02</span><span class="ttl">Brightness lives in two places</span><span class="meta">2 min</span></summary>
+    <div class="body">
+      <p class="txt">Pick <b>Sine</b> and open Cutoff all the way. Almost nothing changes — a sine has no harmonics for the filter to remove. Now switch to <b>Saw</b> and repeat the same Cutoff sweep.</p>
+      <p class="listen"><b>Why it matters:</b> the filter can only take away. If a sound is dull with the filter wide open, the fix is at the oscillator, not the filter. Half of "my patch sounds thin" problems are this.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">P-03</span><span class="ttl">Resonance and the edge of self-oscillation</span><span class="meta">3 min</span></summary>
+    <div class="body">
+      <p class="txt">Saw wave, Cutoff around 40. Raise Resonance to 90 and then move Cutoff slowly up and down while holding a note.</p>
+      <p class="listen"><b>Why it matters:</b> the whistle you hear tracks the cutoff point, not the note. That's the acid squelch, the dubstep wobble, and the classic filter sweep — all the same phenomenon at different speeds.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">P-04</span><span class="ttl">Build the three recipes by ear</span><span class="meta">4 min</span></summary>
+    <div class="body">
+      <p class="txt">Without touching the preset buttons, try to hit each target from the recipes in tab 01, then press the preset to check yourself.</p>
+      <ul>
+        <li><b>Pluck</b> — Attack min, Sustain 0, Decay short, Cutoff high.</li>
+        <li><b>Pad</b> — Attack high, Sustain high, Release long, Cutoff middling.</li>
+        <li><b>Bass stab</b> — Attack min, Sustain medium, Release short, Cutoff high, Resonance up.</li>
+      </ul>
+      <p class="listen"><b>Why it matters:</b> guessing before checking is what turns knowledge into reflex. Reading the answer first teaches you nothing.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">P-05</span><span class="ttl">Set the voice for your theory practice</span><span class="meta">1 min</span></summary>
+    <div class="body">
+      <p class="txt">Before heading to tab 03, dial in a voice that makes musical intervals easy to hear: <b>Triangle</b> or <b>Sine</b>, Attack ~10, Decay 40, Sustain 60, Release 30, Cutoff ~70, Resonance low.</p>
+      <p class="listen"><b>Why it matters:</b> a buzzy resonant saw has so many harmonics that two notes a fifth apart get muddled. Pure-ish tones make intervals and chord qualities obvious. Once your ear knows the interval, come back and make it nasty.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ═══════════════════════ TAB 03 · MUSIC THEORY ═══════════════════════ -->
+
+<section id="th-intro" class="wrap" data-tab="th">
+  <div class="silk"><span>Music theory — start here</span></div>
+  <p class="lead">Twenty lessons, five themes, in order. Every lesson has <b style="color:var(--blue)">▸ playable examples</b> that sound through the playground synth from tab 02 and light up on a mini keyboard, plus a vocabulary block so the words stick. Theory is not rules about what you're allowed to do — it is a set of names for things musicians noticed sounded good, so you can find them again on purpose instead of by accident.</p>
+  <div class="mantra" style="margin-bottom:18px">The whole subject, in one sentence: <b>pick a set of notes (a scale), stack some of them into chords, move between those chords to create tension and release, and lay a melody over the top.</b> Everything below is a detail of one of those four moves.</div>
+  <p class="lead">Two practical notes. First: turn your volume on and click any example — audio needs one click before browsers allow it. Second: the sound you hear is whatever you last dialled in on the <b style="color:var(--ink)">Playground</b> tab, so if intervals sound muddy, go set a cleaner voice (exercise P-05) and come back.</p>
+</section>
+
+<section id="th-1" class="wrap" data-tab="th">
+  <div class="theme">
+    <div class="tn">Theme 1 · Lessons 01–04</div>
+    <h3>Foundations — pitch, distance, time</h3>
+    <p>Before scales and chords there are only two raw materials: how high a note is, and when it happens. Get these four lessons into your ear and everything after them is bookkeeping.</p>
+  </div>
+
+  <details class="tut" open>
+    <summary><span class="num">L-01</span><span class="ttl">Notes, octaves and the twelve semitones</span><span class="meta">start here</span></summary>
+    <div class="body">
+      <p class="goal">Goal: understand why the keyboard looks the way it does, and why music only ever needs twelve note names.</p>
+      <p class="txt">A note is a vibration at some speed, measured in hertz. Play 440 vibrations per second and you get the A above middle C. Double it to 880 and you get a note that sounds so similar we give it the <b>same name</b> — A again, one <b>octave</b> higher. That doubling relationship is the one piece of physics all music sits on, and it's why the keyboard pattern repeats.</p>
+      <p class="txt">Western music slices each octave into <b>twelve equal steps</b>, called <b>semitones</b> (or half steps). Twelve steps up from any note lands you back on the same note name, one octave up. Two semitones make a <b>whole step</b>. That's it — the entire pitch alphabet is twelve items long, repeated forever in both directions.</p>
+      <p class="txt">The white and black keys are just a visual aid for a scale we'll meet in lesson 05. Physically, every neighbouring key — white to black, black to white, or the two white pairs E–F and B–C — is exactly one semitone. <code>C♯</code> and <code>D♭</code> are the same key with two names; that's called <b>enharmonic</b> spelling, and which name you use depends on the key you're in.</p>
+
+      <div class="ex-lab">Hear it</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 61 62 63 64 65 66 67 68 69 70 71 72" data-step="0.19">All 12 semitones, C to C</button>
+        <button class="ex" data-play="60 72" data-step="0.6">Octave leap — C4 to C5</button>
+        <button class="ex" data-play="48 60 72 84" data-step="0.45">The same note, four octaves</button>
+        <button class="ex" data-play="60+72" data-step="1.8">Both C's at once</button>
+        <button class="ex" data-play="64 65" data-step="0.5">E to F — a semitone, no black key</button>
+        <button class="ex" data-play="60 62" data-step="0.5">C to D — a whole step</button>
+      </div>
+      <p class="ex-note">The chromatic run has no "home" feeling — twelve equal steps sound like a staircase, not a melody. That total lack of character is exactly why music picks a subset of them instead.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Semitone</dt><dd>The smallest step in Western music — any two adjacent keys. Also called a half step.</dd>
+        <dt>Whole step</dt><dd>Two semitones. Also called a whole tone or a major second.</dd>
+        <dt>Octave</dt><dd>Twelve semitones; double the frequency. The same note name, higher or lower.</dd>
+        <dt>Pitch class</dt><dd>A note name irrespective of octave — every C anywhere is the same pitch class.</dd>
+        <dt>Chromatic</dt><dd>Using all twelve semitones, in order and without skipping.</dd>
+        <dt>Enharmonic</dt><dd>Two names for one pitch, like C♯ and D♭.</dd>
+        <dt>Middle C</dt><dd>C4 — the reference C near the middle of a piano. The leftmost key on this page's playground.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> starting from any key, you can count twelve semitones up and land on the same note name, and you can say why E–F has no black key between them.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-02</span><span class="ttl">Intervals — the distance between two notes</span><span class="meta">the core skill</span></summary>
+    <div class="body">
+      <p class="goal">Goal: learn the twelve interval names and start recognising them by ear. Everything later — scales, chords, harmony — is built out of these.</p>
+      <p class="txt">An <b>interval</b> is the distance between two notes, counted in semitones. Each distance has a name and, more importantly, a <b>character</b>: a perfect fifth sounds open and stable, a minor second sounds like a horror film. Musicians hear intervals rather than counting them, and that ear is learnable — it just takes repetition, which is what these buttons are for.</p>
+      <p class="txt">The naming looks odd at first because it comes from counting letter names rather than semitones. C up to E spans three letters (C-D-E), so it's a "third" — but it's a <b>major</b> third because it's four semitones. C up to E♭ also spans three letters, so it's still a third, but three semitones makes it a <b>minor</b> third. That major/minor distinction is the single most consequential fact in this whole guide: it's what makes a chord sound happy or sad.</p>
+      <p class="txt">Play two notes one after the other and you have a <b>melodic</b> interval. Play them together and it's a <b>harmonic</b> interval. Same distance, very different job.</p>
+
+      <div class="ex-lab">All twelve, melodically from C</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 61" data-step="0.42">1 · minor 2nd</button>
+        <button class="ex" data-play="60 62" data-step="0.42">2 · major 2nd</button>
+        <button class="ex" data-play="60 63" data-step="0.42">3 · minor 3rd</button>
+        <button class="ex" data-play="60 64" data-step="0.42">4 · major 3rd</button>
+        <button class="ex" data-play="60 65" data-step="0.42">5 · perfect 4th</button>
+        <button class="ex" data-play="60 66" data-step="0.42">6 · tritone</button>
+        <button class="ex" data-play="60 67" data-step="0.42">7 · perfect 5th</button>
+        <button class="ex" data-play="60 68" data-step="0.42">8 · minor 6th</button>
+        <button class="ex" data-play="60 69" data-step="0.42">9 · major 6th</button>
+        <button class="ex" data-play="60 70" data-step="0.42">10 · minor 7th</button>
+        <button class="ex" data-play="60 71" data-step="0.42">11 · major 7th</button>
+        <button class="ex" data-play="60 72" data-step="0.42">12 · octave</button>
+      </div>
+
+      <div class="ex-lab">Melodic versus harmonic</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 67" data-step="0.5">Fifth, melodic</button>
+        <button class="ex" data-play="60+67" data-step="1.6">Fifth, harmonic</button>
+        <button class="ex" data-play="60 64" data-step="0.5">Major 3rd, melodic</button>
+        <button class="ex" data-play="60+64" data-step="1.6">Major 3rd, harmonic</button>
+        <button class="ex" data-play="60+63" data-step="1.6">Minor 3rd, harmonic</button>
+      </div>
+      <p class="ex-note">Ear hooks that actually work: the major 3rd opens <i>Kumbaya</i>, the perfect 4th opens <i>Here Comes the Bride</i>, the perfect 5th opens the <i>Star Wars</i> theme, the minor 3rd is <i>Smoke on the Water</i>, and the tritone is <i>The Simpsons</i>. Find your own hooks — a private, silly one beats a canonical one you don't like.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Interval</dt><dd>The distance between two pitches, named by letter-span plus quality.</dd>
+        <dt>Major / minor</dt><dd>The two sizes a 2nd, 3rd, 6th or 7th can be. Minor is one semitone smaller than major.</dd>
+        <dt>Perfect</dt><dd>The quality of unisons, 4ths, 5ths and octaves — the most stable-sounding intervals, which is why they aren't called major or minor.</dd>
+        <dt>Tritone</dt><dd>Six semitones, exactly half an octave. The most unstable interval, and the engine of tension in Western harmony.</dd>
+        <dt>Melodic interval</dt><dd>Two notes played one after the other.</dd>
+        <dt>Harmonic interval</dt><dd>Two notes played simultaneously.</dd>
+        <dt>Inversion</dt><dd>Flipping which note is on top. A 3rd inverts to a 6th, a 4th to a 5th — the two sizes always add up to nine.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> without looking, you can tell a major 3rd from a minor 3rd, and a perfect 5th from a tritone. Those two distinctions alone will carry you through the next ten lessons.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-03</span><span class="ttl">Rhythm — beat, bar, subdivision, groove</span><span class="meta">the other half</span></summary>
+    <div class="body">
+      <p class="goal">Goal: name the parts of time. Pitch gets all the attention, but rhythm is what makes people move.</p>
+      <p class="txt">The <b>beat</b> is the steady pulse you tap your foot to; its speed is <b>tempo</b>, measured in beats per minute. Beats group into <b>bars</b> (measures), and how many beats sit in a bar is the <b>time signature</b>. Four beats per bar — 4/4 — covers the overwhelming majority of pop, rock and electronic music. Three per bar is a waltz. The first beat of each bar is the <b>downbeat</b>, and it carries a natural accent whether you play one or not.</p>
+      <p class="txt">Between beats you get <b>subdivisions</b>: split each beat in two for eighth notes, in four for sixteenths, in three for triplets. A pattern's identity comes mostly from which subdivision it lives on. And when notes land deliberately <i>off</i> the strong beats, that's <b>syncopation</b> — the single most reliable way to make a straight pattern feel alive.</p>
+      <p class="txt">Then there's <b>swing</b>, which you already met on the MicroFreak's Rate knob: delay every second subdivision slightly and a mechanical grid starts to breathe. 50% is dead straight, 66% is a full triplet shuffle, and most good grooves live between 54% and 60%.</p>
+
+      <div class="ex-lab">Subdivision — same tempo, different grid</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 - 60 - 60 - 60 -" data-step="0.25">Quarter notes</button>
+        <button class="ex" data-play="60 60 60 60 60 60 60 60" data-step="0.25">Eighth notes</button>
+        <button class="ex" data-play="60 60 60 60 60 60 60 60 60 60 60 60 60 60 60 60" data-step="0.125">Sixteenth notes</button>
+        <button class="ex" data-play="60 60 60 60 60 60 60 60 60 60 60 60" data-step="0.167">Triplets</button>
+      </div>
+
+      <div class="ex-lab">Metre and accent — the low note is the downbeat</div>
+      <div class="ex-row">
+        <button class="ex" data-play="48 60 60 60 48 60 60 60" data-step="0.3">4/4 — count 1 2 3 4</button>
+        <button class="ex" data-play="48 60 60 48 60 60" data-step="0.3">3/4 — a waltz</button>
+        <button class="ex" data-play="48 60 60 60 60 48 60 60" data-step="0.28">5/4 — the odd one</button>
+        <button class="ex" data-play="- 60 - 60 60 - 60 -" data-step="0.25">Syncopated — off the beat</button>
+        <button class="ex" data-play="48 - - 60 - - 48 - 60 - 48 -" data-step="0.16">A kick-and-snare feel</button>
+      </div>
+      <p class="ex-note">Count out loud while these play. Counting feels remedial and it is the single highest-return habit in music — it is how a rhythm goes from "something I heard" to "something I can reproduce."</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Beat / pulse</dt><dd>The steady underlying tick you tap your foot to.</dd>
+        <dt>Tempo / BPM</dt><dd>How fast the beats go, in beats per minute.</dd>
+        <dt>Bar / measure</dt><dd>A fixed group of beats — the unit music is counted and written in.</dd>
+        <dt>Time signature</dt><dd>How many beats per bar and what note value counts as one. 4/4, 3/4, 6/8.</dd>
+        <dt>Downbeat</dt><dd>Beat one of a bar. The natural landing point.</dd>
+        <dt>Subdivision</dt><dd>Splitting a beat into smaller equal parts — eighths, sixteenths, triplets.</dd>
+        <dt>Syncopation</dt><dd>Accenting notes that fall between the strong beats.</dd>
+        <dt>Swing / shuffle</dt><dd>Delaying every second subdivision to create a lilting groove.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> you can clap a bar of 4/4 and a bar of 3/4 on demand, and you can hear the difference between straight eighths and a syncopated pattern without seeing them written down.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-04</span><span class="ttl">Consonance, dissonance and the harmonic series</span><span class="meta">why any of it works</span></summary>
+    <div class="body">
+      <p class="goal">Goal: understand <i>why</i> some interval combinations sound stable and others sound like they need to go somewhere. This is the physics under all the rules that follow.</p>
+      <p class="txt">Any real instrument playing a note doesn't produce one frequency — it produces a fundamental plus a stack of quieter <b>overtones</b> above it, at exact whole-number multiples: 2×, 3×, 4×, 5× and so on. That stack is the <b>harmonic series</b>, and it is the ranking system music inherited. The 2× overtone is the octave. The 3× is the perfect fifth. The 5× is the major third. Those are precisely the intervals we find most consonant — because when two notes share overtones, our ears fuse them into one pleasant event.</p>
+      <p class="txt">Notes whose frequencies form simple ratios share lots of overtones and sound <b>consonant</b>: octave 2:1, fifth 3:2, fourth 4:3, major third 5:4. Notes with ugly ratios share almost none, and their close-but-not-equal overtones collide and produce audible <b>beating</b> — that's <b>dissonance</b>. The tritone, at roughly 45:32, is the classic offender.</p>
+      <p class="txt">The crucial reframing: dissonance is not a mistake. It is the fuel. A piece of music that is consonant throughout is wallpaper. Tension asking to be resolved is what gives music direction, and the entire craft of harmony — lessons 10 through 17 — is about deploying dissonance deliberately and then paying it off.</p>
+
+      <div class="ex-lab">The harmonic series, built one overtone at a time on C3</div>
+      <div class="ex-row">
+        <button class="ex" data-play="48 60 67 72 76 79 82" data-step="0.4">Climb the overtones</button>
+        <button class="ex" data-play="48+60+67+72+76+79" data-step="2.4">All of them at once</button>
+      </div>
+      <p class="ex-note">That final stack is a C dominant-ninth chord and you never chose it — it's simply what a single vibrating string already contains. Harmony was discovered, not invented.</p>
+
+      <div class="ex-lab">Consonant to dissonant — held together so you can hear the beating</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+72" data-step="1.7">Octave · 2:1 · perfectly fused</button>
+        <button class="ex" data-play="60+67" data-step="1.7">Fifth · 3:2 · open, stable</button>
+        <button class="ex" data-play="60+65" data-step="1.7">Fourth · 4:3 · stable, hollow</button>
+        <button class="ex" data-play="60+64" data-step="1.7">Major 3rd · 5:4 · warm</button>
+        <button class="ex" data-play="60+69" data-step="1.7">Major 6th · sweet</button>
+        <button class="ex" data-play="60+70" data-step="1.7">Minor 7th · restless</button>
+        <button class="ex" data-play="60+66" data-step="1.7">Tritone · maximum tension</button>
+        <button class="ex" data-play="60+71" data-step="1.7">Major 7th · sharp bite</button>
+        <button class="ex" data-play="60+61" data-step="1.7">Minor 2nd · grinding</button>
+      </div>
+
+      <div class="ex-lab">Tension and release, the whole idea in two seconds</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+66 60+67" data-step="1.1">Tritone resolving to a fifth</button>
+        <button class="ex" data-play="60+61 60+60" data-step="1.1">Minor 2nd resolving to unison</button>
+        <button class="ex" data-play="65+71 64+72" data-step="1.2">The classic: tritone spreading outward</button>
+      </div>
+      <p class="ex-note">That last one is the sound of a dominant seventh resolving to its tonic — the most-used gesture in four centuries of Western music. You'll meet it formally in lesson 14.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Fundamental</dt><dd>The lowest frequency in a note, the one you perceive as its pitch.</dd>
+        <dt>Overtone / harmonic</dt><dd>The quieter frequencies above the fundamental at whole-number multiples.</dd>
+        <dt>Harmonic series</dt><dd>That whole stack. It is where the octave, fifth and major third come from.</dd>
+        <dt>Consonance</dt><dd>Intervals with simple frequency ratios; they sound stable and settled.</dd>
+        <dt>Dissonance</dt><dd>Intervals with complex ratios; they sound tense and want to move.</dd>
+        <dt>Beating</dt><dd>The wobbling you hear when two close frequencies interfere. Audible dissonance.</dd>
+        <dt>Resolution</dt><dd>Moving from a dissonance to a consonance. The payoff.</dd>
+        <dt>Timbre</dt><dd>The mix of overtone strengths — why a flute and a saw wave differ on the same note.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> you can explain to someone else why a perfect fifth sounds "open" without using the word "because it just does" — and you understand that the MicroFreak's filter is, literally, a tool for reshaping the harmonic series in real time.</p>
+    </div>
+  </details>
+</section>
+
+<section id="th-2" class="wrap" data-tab="th">
+  <div class="theme">
+    <div class="tn">Theme 2 · Lessons 05–09</div>
+    <h3>Scales and keys — choosing your twelve down to seven</h3>
+    <p>All twelve semitones sound like nothing in particular. Pick seven of them in a specific pattern and you get a home base, a hierarchy, and a mood. That selection is a scale, and committing to one is a key.</p>
+  </div>
+
+  <details class="tut">
+    <summary><span class="num">L-05</span><span class="ttl">The major scale — the ruler everything is measured against</span><span class="meta">the big one</span></summary>
+    <div class="body">
+      <p class="goal">Goal: know the major scale as a <i>pattern of steps</i>, not as a set of white keys, so you can build it starting anywhere.</p>
+      <p class="txt">A <b>scale</b> is an ordered selection of notes from the twelve, used as the raw material for a piece. The major scale takes seven of them in one specific pattern of whole (W) and half (H) steps:</p>
+      <p class="txt" style="font-family:var(--mono);color:var(--orange-hi);font-size:15px;letter-spacing:.06em">W – W – H – W – W – W – H</p>
+      <p class="txt">Start that pattern on C and it lands entirely on white keys — which is the only reason the piano looks the way it does. Start it on G and you need one black key (F♯) to keep the pattern intact. Start it on any of the twelve notes and you get that same bright, resolved major sound, just higher or lower. <b>The pattern is the scale; the starting note is just where you put it.</b></p>
+      <p class="txt">The starting note is the <b>tonic</b> — home. Every other note is described by its number, its <b>scale degree</b>, and each degree has a job and a traditional name: 1 tonic, 2 supertonic, 3 mediant, 4 subdominant, 5 dominant, 6 submediant, 7 leading tone. You mostly need three of them. Degree 1 is home. Degree 5 is the strongest away-from-home. Degree 7, the <b>leading tone</b>, sits one semitone below home and pulls toward it so hard that it practically resolves itself.</p>
+
+      <div class="ex-lab">The same pattern from different starting notes</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 62 64 65 67 69 71 72" data-step="0.32">C major — all white keys</button>
+        <button class="ex" data-play="67 69 71 72 74 76 78 79" data-step="0.32">G major — one sharp</button>
+        <button class="ex" data-play="65 67 69 70 72 74 76 77" data-step="0.32">F major — one flat</button>
+        <button class="ex" data-play="62 64 66 67 69 71 73 74" data-step="0.32">D major — two sharps</button>
+        <button class="ex" data-play="72 71 69 67 65 64 62 60" data-step="0.32">C major, descending</button>
+      </div>
+
+      <div class="ex-lab">Hear the degrees do their jobs</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 60" data-step="0.5">1 — home</button>
+        <button class="ex" data-play="60 67 60" data-step="0.5">1 – 5 – 1 · away and back</button>
+        <button class="ex" data-play="71 72" data-step="0.5">7 → 1 · the leading tone pulling</button>
+        <button class="ex" data-play="60 62 64 65 67 69 71" data-step="0.3">Stop on 7 · unbearable</button>
+        <button class="ex" data-play="65 64" data-step="0.5">4 → 3 · the other half-step pull</button>
+      </div>
+      <p class="ex-note">Play "stop on 7" and try not to hum the final C. You can't. That involuntary reflex is the leading tone, and it is the strongest force in tonal music — lesson 14 is entirely about exploiting it.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Scale</dt><dd>An ordered selection of pitches used as the raw material for a piece.</dd>
+        <dt>Major scale</dt><dd>The W-W-H-W-W-W-H pattern. Bright, resolved, the default of Western music.</dd>
+        <dt>Tonic</dt><dd>Scale degree 1 — home, the note everything resolves to.</dd>
+        <dt>Scale degree</dt><dd>A note's numbered position in the scale, written 1̂ to 7̂.</dd>
+        <dt>Dominant</dt><dd>Degree 5. The strongest tension point, and the note a fifth above home.</dd>
+        <dt>Subdominant</dt><dd>Degree 4. A softer departure from home.</dd>
+        <dt>Leading tone</dt><dd>Degree 7, one semitone under the tonic, pulling upward.</dd>
+        <dt>Key</dt><dd>Committing to one scale as the reference frame for a passage.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> pick any of the twelve notes, apply W-W-H-W-W-W-H by counting keys, and play a correct major scale from it. Do it for three different starting notes and this lesson is done.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-06</span><span class="ttl">Minor scales — natural, harmonic and melodic</span><span class="meta">the other mood</span></summary>
+    <div class="body">
+      <p class="goal">Goal: build all three minor scales and understand why there are three rather than one.</p>
+      <p class="txt">The <b>natural minor</b> scale flattens degrees 3, 6 and 7 of the major. Its step pattern is W-H-W-W-H-W-W. The flattened third is what does the emotional work — remember from lesson 02 that major third versus minor third is the happy/sad switch. Flatten it and the whole scale turns.</p>
+      <p class="txt">Here is the trick that saves enormous effort: <b>A natural minor uses exactly the same notes as C major</b>, just starting from a different place. Every major scale has a <b>relative minor</b> three semitones below its tonic, sharing all seven notes. Same notes, different home, completely different feeling — proof that a key is about hierarchy, not just note content.</p>
+      <p class="txt">But natural minor has a weakness: its seventh degree is a whole step below the tonic, so it doesn't pull home the way a leading tone should. Composers fixed this by raising it, producing the <b>harmonic minor</b> — which restores the pull but leaves an exotic three-semitone gap between degrees 6 and 7. Fixing <i>that</i> gap by also raising the sixth on the way up gives the <b>melodic minor</b>, traditionally played raised ascending and natural descending. Three scales, one problem, two patches.</p>
+      <p class="txt">Distinguish <b>relative</b> from <b>parallel</b>: A minor is the relative minor of C major (same notes, different tonic). C minor is the <b>parallel</b> minor of C major (same tonic, different notes). Swapping between parallel keys mid-song is a favourite trick — see lesson 17.</p>
+
+      <div class="ex-lab">The three minors, all on A</div>
+      <div class="ex-row">
+        <button class="ex" data-play="57 59 60 62 64 65 67 69" data-step="0.32">A natural minor</button>
+        <button class="ex" data-play="57 59 60 62 64 65 68 69" data-step="0.32">A harmonic minor — raised 7</button>
+        <button class="ex" data-play="57 59 60 62 64 66 68 69" data-step="0.32">A melodic minor ascending</button>
+        <button class="ex" data-play="69 67 65 64 62 60 59 57" data-step="0.32">Melodic minor descending — back to natural</button>
+      </div>
+      <p class="ex-note">Harmonic minor's leap from F to G♯ is that three-semitone gap. It's why the scale sounds Middle-Eastern or Baroque depending on what you do with it — and why so much metal lives here.</p>
+
+      <div class="ex-lab">Relative versus parallel</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 62 64 65 67 69 71 72" data-step="0.3">C major</button>
+        <button class="ex" data-play="57 59 60 62 64 65 67 69" data-step="0.3">A minor — identical notes</button>
+        <button class="ex" data-play="60 62 63 65 67 68 70 72" data-step="0.3">C minor — same home, three notes changed</button>
+        <button class="ex" data-play="60+64+67 60+63+67" data-step="1.3">C major chord → C minor chord</button>
+      </div>
+      <p class="ex-note">That last pair moves exactly one note by one semitone, and the mood flips completely. One semitone. That is the entire budget required to break someone's heart.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Natural minor</dt><dd>W-H-W-W-H-W-W. Major with flattened 3rd, 6th and 7th. Also called the Aeolian mode.</dd>
+        <dt>Harmonic minor</dt><dd>Natural minor with a raised 7th, restoring the leading tone.</dd>
+        <dt>Melodic minor</dt><dd>Raised 6th and 7th ascending, natural descending.</dd>
+        <dt>Relative minor</dt><dd>The minor key sharing a major key's notes, starting three semitones lower.</dd>
+        <dt>Parallel minor</dt><dd>The minor key with the same tonic as a major key.</dd>
+        <dt>Flattened degree</dt><dd>A scale degree lowered a semitone from its major-scale position, written ♭3, ♭6, ♭7.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> given any major key, you can name its relative minor instantly (count three semitones down, or six scale steps up) and play both from the same seven notes.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-07</span><span class="ttl">The modes — seven flavours from one set of notes</span><span class="meta">the fun one</span></summary>
+    <div class="body">
+      <p class="goal">Goal: stop finding modes mystical. They are one simple idea applied seven times.</p>
+      <p class="txt">You already know the idea from lesson 06: take C major's notes but treat A as home and you get a minor scale. Do that from <i>every</i> degree and you get the seven <b>modes</b>. Same seven notes, seven different homes, seven different characters — because the pattern of steps around the new tonic is different each time.</p>
+      <p class="txt">Playing them from the white keys makes the construction obvious but hides the character, because your ear keeps hearing C major. The genuinely useful way to learn modes is to build them all from the <b>same tonic</b> and compare — then each mode's one distinguishing note jumps out. That distinguishing note is called the <b>characteristic note</b>, and it's the whole personality of the mode:</p>
+      <ul style="margin-bottom:14px">
+        <li><b>Ionian</b> — the major scale. The reference.</li>
+        <li><b>Dorian</b> — minor with a <i>raised</i> 6th. Minor but hopeful. Funk, folk, <i>Scarborough Fair</i>.</li>
+        <li><b>Phrygian</b> — minor with a ♭2. Spanish, sinister, metal.</li>
+        <li><b>Lydian</b> — major with a ♯4. Floating, wondrous, film scores.</li>
+        <li><b>Mixolydian</b> — major with a ♭7. Bluesy, rock, unresolved-in-a-good-way.</li>
+        <li><b>Aeolian</b> — natural minor. The reference sad scale.</li>
+        <li><b>Locrian</b> — ♭2 <i>and</i> ♭5. Unstable to the point of being nearly unusable. Include it for completeness.</li>
+      </ul>
+
+      <div class="ex-lab">Construction — all from the white keys of C</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 62 64 65 67 69 71 72" data-step="0.28">C Ionian</button>
+        <button class="ex" data-play="62 64 65 67 69 71 72 74" data-step="0.28">D Dorian</button>
+        <button class="ex" data-play="64 65 67 69 71 72 74 76" data-step="0.28">E Phrygian</button>
+        <button class="ex" data-play="65 67 69 71 72 74 76 77" data-step="0.28">F Lydian</button>
+        <button class="ex" data-play="67 69 71 72 74 76 77 79" data-step="0.28">G Mixolydian</button>
+        <button class="ex" data-play="69 71 72 74 76 77 79 81" data-step="0.28">A Aeolian</button>
+        <button class="ex" data-play="71 72 74 76 77 79 81 83" data-step="0.28">B Locrian</button>
+      </div>
+
+      <div class="ex-lab">Character — all from C, so you hear the difference</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 62 64 65 67 69 71 72" data-step="0.28">C Ionian</button>
+        <button class="ex" data-play="60 62 63 65 67 69 70 72" data-step="0.28">C Dorian · ♮6</button>
+        <button class="ex" data-play="60 61 63 65 67 68 70 72" data-step="0.28">C Phrygian · ♭2</button>
+        <button class="ex" data-play="60 62 64 66 67 69 71 72" data-step="0.28">C Lydian · ♯4</button>
+        <button class="ex" data-play="60 62 64 65 67 69 70 72" data-step="0.28">C Mixolydian · ♭7</button>
+        <button class="ex" data-play="60 62 63 65 67 68 70 72" data-step="0.28">C Aeolian · ♭3♭6♭7</button>
+        <button class="ex" data-play="60 61 63 65 66 68 70 72" data-step="0.28">C Locrian · ♭2♭5</button>
+      </div>
+      <p class="ex-note">Compare C Dorian and C Aeolian back to back — they differ by exactly one note, the 6th, and Dorian's raised 6th is why it sounds like it's smiling through the sadness. That single note is the whole reason Dorian dominates funk and modal jazz.</p>
+
+      <div class="ex-lab">Modes need a drone to be audible</div>
+      <div class="ex-row">
+        <button class="ex" data-play="48+60 62 63 65 67 69 70 72" data-step="0.34">C Dorian over a C drone</button>
+        <button class="ex" data-play="48+60 61 63 65 67 68 70 72" data-step="0.34">C Phrygian over a C drone</button>
+        <button class="ex" data-play="48+60 62 64 66 67 69 71 72" data-step="0.34">C Lydian over a C drone</button>
+      </div>
+      <p class="ex-note">This is the practical secret of modal writing: a mode only sounds modal if the harmony refuses to leave home. The moment you play a normal chord progression, the ear reinterprets everything as ordinary major or minor. On the MicroFreak, hold a low root with Paraphonic on and arpeggiate the mode above it.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Mode</dt><dd>A scale formed by treating a different degree of a parent scale as the tonic.</dd>
+        <dt>Characteristic note</dt><dd>The one degree that distinguishes a mode from plain major or minor.</dd>
+        <dt>Parent scale</dt><dd>The major scale a mode's notes are drawn from.</dd>
+        <dt>Drone / pedal</dt><dd>A sustained root note that anchors the ear so a mode's colour is audible.</dd>
+        <dt>Modal</dt><dd>Music organised around a mode's colour rather than around chord progressions and resolutions.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> given "D Dorian", you can say both which notes it uses (C major's) and what makes it Dorian (minor with a natural 6th). Both answers matter — the first tells you what to play, the second tells you why it sounds like that.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-08</span><span class="ttl">Pentatonic and blues scales — fewer notes, no wrong ones</span><span class="meta">instant results</span></summary>
+    <div class="body">
+      <p class="goal">Goal: get a scale you can improvise with immediately, and understand why removing notes makes things easier rather than more limited.</p>
+      <p class="txt">The <b>major pentatonic</b> is the major scale minus degrees 4 and 7 — five notes left. Those two are precisely the notes that create the strongest tension (remember the leading tone's pull and the 4→3 pull from lesson 05). Remove them and nothing you play can sound wrong, because no note is straining toward anywhere. That's why pentatonics turn up in folk music on every continent independently: they're the path of least resistance.</p>
+      <p class="txt">The <b>minor pentatonic</b> is the same five notes started from the relative minor — 1, ♭3, 4, 5, ♭7. This is the scale of essentially all rock guitar soloing. Add one more note, the ♭5 — the <b>blue note</b> — and you get the <b>blues scale</b>: six notes, and the added one is deliberately dissonant, used as a passing sting rather than a resting place.</p>
+
+      <div class="ex-lab">Five notes</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 62 64 67 69 72" data-step="0.3">C major pentatonic</button>
+        <button class="ex" data-play="57 60 62 64 67 69" data-step="0.3">A minor pentatonic — same notes</button>
+        <button class="ex" data-play="57 60 62 63 64 67 69" data-step="0.3">A blues scale — the ♭5 added</button>
+        <button class="ex" data-play="60 62 64 65 67 69 71 72" data-step="0.28">Full major scale, for comparison</button>
+      </div>
+
+      <div class="ex-lab">Why it feels safe — melodic fragments</div>
+      <div class="ex-row">
+        <button class="ex" data-play="69 67 64 62 60 62 64 67" data-step="0.24">A pentatonic noodle</button>
+        <button class="ex" data-play="57 60 62 63 64 62 60 57" data-step="0.24">A blues lick — through the ♭5</button>
+        <button class="ex" data-play="48+55 69 67 64 67 64 62 60" data-step="0.26">Over an A drone</button>
+      </div>
+      <p class="ex-note">In the blues lick, note 63 (the ♭5) never lands on a strong beat — it slides through on the way somewhere. Blue notes are transit, not destinations. Sit on one and it sounds like a mistake; pass through it and it sounds like the blues.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Pentatonic</dt><dd>A five-note scale. Major pentatonic omits degrees 4 and 7.</dd>
+        <dt>Minor pentatonic</dt><dd>1, ♭3, 4, 5, ♭7 — the relative-minor rotation of major pentatonic.</dd>
+        <dt>Blues scale</dt><dd>Minor pentatonic plus the ♭5.</dd>
+        <dt>Blue note</dt><dd>The ♭5 (also ♭3 and ♭7 in practice) — deliberately outside, used in passing.</dd>
+        <dt>Passing note</dt><dd>A note used to move between two stable notes rather than to be landed on.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> set the MicroFreak's arp to Random, hold three or four notes from one pentatonic scale, and let it run. Everything it generates will be musical — that's the point of the scale, and it's the fastest possible demonstration of it.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-09</span><span class="ttl">Keys, key signatures and the circle of fifths</span><span class="meta">the map</span></summary>
+    <div class="body">
+      <p class="goal">Goal: see how the twelve keys relate to each other, so moving between them stops being guesswork.</p>
+      <p class="txt">A <b>key</b> is a commitment: this passage uses this scale, with this note as home. Since each major scale needs a specific set of sharps or flats to keep its W-W-H-W-W-W-H pattern, each key has a <b>key signature</b> — the fixed list of accidentals that apply throughout.</p>
+      <p class="txt">Those signatures are not arbitrary. Go up a perfect fifth from C to G and the scale needs exactly one sharp. Up another fifth to D, two sharps. Another to A, three. Keep going and after twelve fifths you arrive back at C. Arrange the twelve keys in that order and you get the <b>circle of fifths</b> — the single most useful diagram in music.</p>
+      <p class="txt">It earns its keep three ways. <b>Neighbouring keys share almost all their notes</b>, so moving to an adjacent key (<b>modulation</b>) sounds smooth while jumping across the circle sounds jarring. <b>Root motion by descending fifth is the strongest chord movement there is</b> — it's why ii–V–I works, and why entire jazz tunes are just laps around the circle. And it tells you a key's relative minor at a glance, sitting on an inner ring.</p>
+      <p class="txt">Going the other direction from C, down a fifth to F, adds flats instead: F has one, B♭ two, E♭ three. Sharps and flats are the same circle approached from opposite sides, meeting at the bottom where F♯ and G♭ are the same key with two spellings.</p>
+
+      <div class="ex-lab">Adding one sharp at a time — clockwise round the circle</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 62 64 65 67 69 71 72" data-step="0.26">C · no sharps</button>
+        <button class="ex" data-play="67 69 71 72 74 76 78 79" data-step="0.26">G · F♯</button>
+        <button class="ex" data-play="62 64 66 67 69 71 73 74" data-step="0.26">D · F♯ C♯</button>
+        <button class="ex" data-play="57 59 61 62 64 66 68 69" data-step="0.26">A · F♯ C♯ G♯</button>
+        <button class="ex" data-play="64 66 68 69 71 73 75 76" data-step="0.26">E · four sharps</button>
+      </div>
+
+      <div class="ex-lab">Adding one flat at a time — anticlockwise</div>
+      <div class="ex-row">
+        <button class="ex" data-play="65 67 69 70 72 74 76 77" data-step="0.26">F · B♭</button>
+        <button class="ex" data-play="58 60 62 63 65 67 69 70" data-step="0.26">B♭ · B♭ E♭</button>
+        <button class="ex" data-play="63 65 67 68 70 72 74 75" data-step="0.26">E♭ · three flats</button>
+      </div>
+
+      <div class="ex-lab">The circle itself</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 67 62 69 64 71 66 61 68 63 70 65 60" data-step="0.34">Twelve fifths back to C</button>
+        <button class="ex" data-play="60+64+67 65+69+72 70+74+77 63+67+70" data-step="0.85">Four chords falling by fifths</button>
+        <button class="ex" data-play="62+65+69 67+71+74 60+64+67" data-step="0.95">ii – V – I · two steps of the circle</button>
+      </div>
+      <p class="ex-note">That final progression is the backbone of jazz and a huge slice of pop. It is nothing more than two consecutive steps around this circle, landing home. Once you see the circle you start seeing it everywhere.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Key</dt><dd>The scale plus tonic a passage is organised around.</dd>
+        <dt>Key signature</dt><dd>The sharps or flats belonging to a key, applied throughout.</dd>
+        <dt>Accidental</dt><dd>A sharp, flat or natural applied to a single note outside the key signature.</dd>
+        <dt>Circle of fifths</dt><dd>The twelve keys arranged by ascending fifths; adjacent keys differ by one accidental.</dd>
+        <dt>Transposition</dt><dd>Moving an entire passage up or down by a fixed interval, keeping all relationships intact.</dd>
+        <dt>Modulation</dt><dd>Changing key mid-piece. Close on the circle is smooth; far is dramatic.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> you can name the sharps in D major (F♯, C♯) without counting, and you can explain why a song that modulates from C to G sounds natural while C to F♯ sounds like a hard cut.</p>
+    </div>
+  </details>
+</section>
+
+<section id="th-3" class="wrap" data-tab="th">
+  <div class="theme">
+    <div class="tn">Theme 3 · Lessons 10–14</div>
+    <h3>Harmony — stacking notes and moving between them</h3>
+    <p>Notes played together become chords; chords played in sequence become a story with tension and payoff. This theme is the engine room of songwriting, and the payoff for everything in themes 1 and 2.</p>
+  </div>
+
+  <details class="tut">
+    <summary><span class="num">L-10</span><span class="ttl">Triads — stacking thirds</span><span class="meta">chords begin</span></summary>
+    <div class="body">
+      <p class="goal">Goal: build the four triad types from scratch and hear what each one is for.</p>
+      <p class="txt">A <b>chord</b> is three or more notes sounded together. The standard way to build one is to stack <b>thirds</b>: take a note, skip one scale step, take the next, skip again, take the next. Three notes — a <b>triad</b> — named <b>root</b>, <b>third</b> and <b>fifth</b> after their intervals from the root.</p>
+      <p class="txt">Which <i>kind</i> of thirds you stack determines everything. Recall from lesson 02 that a major third is four semitones and a minor third is three. Stack them in different orders and you get all four triads:</p>
+      <ul style="margin-bottom:14px">
+        <li><b>Major</b> — major third then minor third (4 + 3). Bright, resolved.</li>
+        <li><b>Minor</b> — minor third then major third (3 + 4). Dark, resolved.</li>
+        <li><b>Diminished</b> — minor then minor (3 + 3). Tense, unstable, wants to move.</li>
+        <li><b>Augmented</b> — major then major (4 + 4). Eerie, suspended, directionless.</li>
+      </ul>
+      <p class="txt">Notice major and minor are the same two intervals in swapped order, and that both stable triads contain a perfect fifth between the outer notes. The two unstable ones don't — diminished has a tritone, augmented has a minor sixth. Stability is the perfect fifth, exactly as lesson 04 predicted.</p>
+      <p class="txt">Finally, a chord doesn't care which note is at the bottom. Move the root up an octave and you get the <b>first inversion</b>; move the third up too and you get the <b>second inversion</b>. Same chord, same name, different colour and different bass note. Which arrangement you choose is the <b>voicing</b>, and it matters enormously for how smooth a progression sounds — that's lesson 15.</p>
+
+      <div class="ex-lab">The four triads on C</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67" data-step="1.7">Major · 4+3</button>
+        <button class="ex" data-play="60+63+67" data-step="1.7">Minor · 3+4</button>
+        <button class="ex" data-play="60+63+66" data-step="1.7">Diminished · 3+3</button>
+        <button class="ex" data-play="60+64+68" data-step="1.7">Augmented · 4+4</button>
+        <button class="ex" data-play="60+64+67 60+63+67 60+63+66 60+64+68" data-step="1.1">All four in a row</button>
+      </div>
+
+      <div class="ex-lab">Built up one note at a time</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 64 67 60+64+67" data-step="0.5">Major, arpeggiated then together</button>
+        <button class="ex" data-play="60 63 67 60+63+67" data-step="0.5">Minor, arpeggiated then together</button>
+        <button class="ex" data-play="60 64 67 72 67 64 60" data-step="0.28">Arpeggio up and down</button>
+      </div>
+
+      <div class="ex-lab">Inversions and voicing — all the same C major chord</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67" data-step="1.6">Root position · C E G</button>
+        <button class="ex" data-play="64+67+72" data-step="1.6">First inversion · E G C</button>
+        <button class="ex" data-play="67+72+76" data-step="1.6">Second inversion · G C E</button>
+        <button class="ex" data-play="48+67+76" data-step="1.6">Open voicing · spread wide</button>
+        <button class="ex" data-play="60+64+67 64+67+72 67+72+76 72+76+79" data-step="0.85">Climbing through the inversions</button>
+      </div>
+      <p class="ex-note">The open voicing sounds noticeably clearer than the close one. Bunching notes together low down is the most common cause of muddy chords — spread the low intervals wide and keep the tight intervals up high, which is exactly how the harmonic series is arranged.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Chord</dt><dd>Three or more notes sounded together.</dd>
+        <dt>Triad</dt><dd>A three-note chord built from stacked thirds.</dd>
+        <dt>Root</dt><dd>The note a chord is built on and named after.</dd>
+        <dt>Third / fifth</dt><dd>The other two triad members, named by their interval above the root. The third sets major or minor.</dd>
+        <dt>Diminished</dt><dd>Minor third plus minor third. Contains a tritone; deeply unstable.</dd>
+        <dt>Augmented</dt><dd>Major third plus major third. Symmetrical and unsettled.</dd>
+        <dt>Inversion</dt><dd>A chord with something other than the root in the bass.</dd>
+        <dt>Voicing</dt><dd>The specific octave arrangement and spacing of a chord's notes.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> you can build a major and a minor triad on any of the twelve notes by counting 4+3 or 3+4 semitones, and you can hear which is which with your eyes shut.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-11</span><span class="ttl">Diatonic chords and Roman numerals</span><span class="meta">the toolkit</span></summary>
+    <div class="body">
+      <p class="goal">Goal: derive the seven chords that belong to a key, and learn the notation that makes progressions portable between keys.</p>
+      <p class="txt">Build a triad on <i>each</i> degree of the major scale, using only notes from that scale, and something remarkable falls out: the qualities are always in the same order, in every major key. Degrees 1, 4 and 5 give major chords. Degrees 2, 3 and 6 give minor chords. Degree 7 gives a diminished chord. Always. That fixed pattern is the reason a key feels like a coherent place.</p>
+      <p class="txt">Because the pattern is universal, we name the chords by <b>Roman numeral</b> instead of by letter: uppercase for major, lowercase for minor, a small circle for diminished. So every major key has <b>I ii iii IV V vi vii°</b>. Write a progression as I–V–vi–IV and it works in any key — you've described the <i>relationships</i>, which is what actually produces the sound, rather than the specific letters, which are just where you happened to put it.</p>
+      <p class="txt">These chords also have <b>functions</b>, which is the deeper organising idea. <b>Tonic</b> chords (I, vi, iii) feel like home. <b>Subdominant</b> chords (IV, ii) feel like departure. <b>Dominant</b> chords (V, vii°) feel like tension demanding resolution. The classic shape of a phrase is tonic → subdominant → dominant → tonic: leave home, get further away, build tension, come back.</p>
+      <p class="txt">Minor keys work the same way with a different pattern: <b>i ii° III iv v VI VII</b>. In practice the v is usually raised to a major <b>V</b> by borrowing harmonic minor's leading tone — without it, minor keys have no proper pull home.</p>
+
+      <div class="ex-lab">The seven chords of C major</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67" data-step="1.3">I · C major</button>
+        <button class="ex" data-play="62+65+69" data-step="1.3">ii · D minor</button>
+        <button class="ex" data-play="64+67+71" data-step="1.3">iii · E minor</button>
+        <button class="ex" data-play="65+69+72" data-step="1.3">IV · F major</button>
+        <button class="ex" data-play="67+71+74" data-step="1.3">V · G major</button>
+        <button class="ex" data-play="69+72+76" data-step="1.3">vi · A minor</button>
+        <button class="ex" data-play="71+74+77" data-step="1.3">vii° · B diminished</button>
+        <button class="ex" data-play="60+64+67 62+65+69 64+67+71 65+69+72 67+71+74 69+72+76 71+74+77 72+76+79" data-step="0.72">All seven, in order</button>
+      </div>
+      <p class="ex-note">Listen to the run and hear how vii° almost hurts before the final I lands. That chord contains the tritone between degrees 4 and 7 — the two notes the pentatonic scale removed in lesson 08 for exactly this reason.</p>
+
+      <div class="ex-lab">Function — home, away, tension, home</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 65+69+72 67+71+74 60+64+67" data-step="1.0">I – IV – V – I</button>
+        <button class="ex" data-play="60+64+67 69+72+76 62+65+69 67+71+74 60+64+67" data-step="0.95">I – vi – ii – V – I</button>
+        <button class="ex" data-play="60+64+67 67+71+74" data-step="1.2">Stop on V — unfinished</button>
+      </div>
+
+      <div class="ex-lab">The same idea in A minor</div>
+      <div class="ex-row">
+        <button class="ex" data-play="57+60+64" data-step="1.3">i · A minor</button>
+        <button class="ex" data-play="59+62+65" data-step="1.3">ii° · B diminished</button>
+        <button class="ex" data-play="60+64+67" data-step="1.3">III · C major</button>
+        <button class="ex" data-play="62+65+69" data-step="1.3">iv · D minor</button>
+        <button class="ex" data-play="64+67+71" data-step="1.3">v · E minor · weak</button>
+        <button class="ex" data-play="64+68+71" data-step="1.3">V · E major · borrowed leading tone</button>
+        <button class="ex" data-play="65+69+72" data-step="1.3">VI · F major</button>
+        <button class="ex" data-play="67+71+74" data-step="1.3">VII · G major</button>
+      </div>
+      <div class="ex-row">
+        <button class="ex" data-play="57+60+64 62+65+69 64+67+71 57+60+64" data-step="1.0">i – iv – v – i · modal, soft landing</button>
+        <button class="ex" data-play="57+60+64 62+65+69 64+68+71 57+60+64" data-step="1.0">i – iv – V – i · the G♯ makes it decisive</button>
+      </div>
+      <p class="ex-note">Play those last two back to back. One note — G natural becoming G♯ — is the difference between a folk song and a funeral march. That is the leading tone earning its keep.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Diatonic</dt><dd>Using only notes belonging to the current key.</dd>
+        <dt>Roman numeral</dt><dd>Chord notation by scale degree: uppercase major, lowercase minor, ° diminished.</dd>
+        <dt>Function</dt><dd>A chord's role — tonic (home), subdominant (departure), dominant (tension).</dd>
+        <dt>Tonic chord</dt><dd>I, and its substitutes vi and iii. Rest.</dd>
+        <dt>Subdominant chord</dt><dd>IV and ii. Motion away from home.</dd>
+        <dt>Dominant chord</dt><dd>V and vii°. Tension that resolves to I.</dd>
+        <dt>Chord quality</dt><dd>Major, minor, diminished or augmented — set by the intervals, not the root.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> in any major key you can name all seven diatonic chords with their qualities, and you can hear whether a chord is functioning as home, departure or tension.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-12</span><span class="ttl">Seventh chords — adding colour and direction</span><span class="meta">jazz starts here</span></summary>
+    <div class="body">
+      <p class="goal">Goal: stack one more third onto every triad and understand why the dominant seventh in particular changed music.</p>
+      <p class="txt">Keep stacking thirds past the fifth and you reach the seventh. A <b>seventh chord</b> has four notes and is dramatically more expressive than a triad, because the added note is a mild dissonance that gives the chord an opinion about where to go next.</p>
+      <p class="txt">Six types matter. <b>Major 7th</b> (major triad + major 7th) is lush and dreamy. <b>Dominant 7th</b> (major triad + <i>minor</i> 7th) is tense and directional. <b>Minor 7th</b> (minor triad + minor 7th) is smooth and mellow. <b>Half-diminished</b> (diminished triad + minor 7th) is plaintive. <b>Diminished 7th</b> (diminished + diminished 7th) is maximum instability. <b>Minor-major 7th</b> is the sound of a spy film.</p>
+      <p class="txt">The <b>dominant seventh</b> deserves special attention. Built on degree 5, it contains the tritone between degrees 4 and 7 of the key — and that tritone resolves outward to the tonic's third and root exactly as you heard in lesson 04. It is the strongest pull toward home in all of tonal music, which is why "dominant" means both "the chord on degree 5" and "the chord that demands resolution."</p>
+      <p class="txt">Applying the same stacking to every degree gives the diatonic sevenths: <b>Imaj7 · ii7 · iii7 · IVmaj7 · V7 · vi7 · viiø7</b>. Only one of the seven is a dominant seventh — the one on degree 5. That uniqueness is what makes V7 announce the key so unambiguously.</p>
+
+      <div class="ex-lab">The six seventh-chord types, all on C</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67+71" data-step="1.9">Cmaj7 · lush</button>
+        <button class="ex" data-play="60+64+67+70" data-step="1.9">C7 dominant · tense</button>
+        <button class="ex" data-play="60+63+67+70" data-step="1.9">Cm7 · mellow</button>
+        <button class="ex" data-play="60+63+66+70" data-step="1.9">Cø7 half-diminished</button>
+        <button class="ex" data-play="60+63+66+69" data-step="1.9">C°7 fully diminished</button>
+        <button class="ex" data-play="60+63+67+71" data-step="1.9">CmMaj7 · the spy chord</button>
+      </div>
+
+      <div class="ex-lab">Triad versus seventh — the same chord, upgraded</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 60+64+67+71" data-step="1.5">C → Cmaj7</button>
+        <button class="ex" data-play="67+71+74 67+71+74+77" data-step="1.5">G → G7</button>
+        <button class="ex" data-play="62+65+69 62+65+69+72" data-step="1.5">Dm → Dm7</button>
+      </div>
+
+      <div class="ex-lab">The diatonic sevenths of C major</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67+71 62+65+69+72 64+67+71+74 65+69+72+76 67+71+74+77 69+72+76+79 71+74+77+81 72+76+79+83" data-step="0.8">All seven, in order</button>
+        <button class="ex" data-play="62+65+69+72 67+71+74+77 60+64+67+71" data-step="1.15">ii7 – V7 – Imaj7 · the jazz cadence</button>
+        <button class="ex" data-play="67+71+74+77 60+64+67" data-step="1.4">V7 → I · hear the tritone resolve</button>
+      </div>
+      <p class="ex-note">In that last example the B and F inside the G7 pull apart to C and E. Everything else is decoration. If you understand this one gesture you understand functional harmony.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Seventh chord</dt><dd>A four-note chord — a triad with another third stacked on top.</dd>
+        <dt>Major 7th</dt><dd>Major triad plus major 7th. Written maj7 or Δ.</dd>
+        <dt>Dominant 7th</dt><dd>Major triad plus minor 7th. Written just "7". Contains the key's tritone.</dd>
+        <dt>Minor 7th</dt><dd>Minor triad plus minor 7th. Written m7 or −7.</dd>
+        <dt>Half-diminished</dt><dd>Diminished triad plus minor 7th. Written ø7 or m7♭5.</dd>
+        <dt>Diminished 7th</dt><dd>Stacked minor thirds all the way. Symmetrical, resolves anywhere.</dd>
+        <dt>Chord symbol</dt><dd>The shorthand written above a staff: Cmaj7, G7, Dm7, Bø7.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> you can hear the difference between Cmaj7 and C7 immediately, and you can say why only one of them makes you expect another chord to follow.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-13</span><span class="ttl">Progressions that work — and why</span><span class="meta">songwriting</span></summary>
+    <div class="body">
+      <p class="goal">Goal: collect a working set of chord progressions and understand the logic underneath, so you can build your own instead of copying.</p>
+      <p class="txt">A <b>progression</b> is a sequence of chords. Some sequences feel inevitable and others feel arbitrary, and the difference is mostly two things: <b>function</b> (are you moving home → away → tension → home?) and <b>root motion</b> (how far the bass note travels).</p>
+      <p class="txt">Root motion has a clear pecking order. <b>Down a fifth</b> is the strongest — it's the circle of fifths from lesson 09, and it's what V→I does. <b>Down a third</b> is smooth and gentle, because the two chords share two notes. <b>Up a second</b> is bright and forceful, because they share nothing. Most memorable progressions are just these three moves in different orders.</p>
+      <p class="txt">Here are the ones worth knowing by heart. Learn them as Roman numerals, not letters, so they transpose free of charge.</p>
+
+      <div class="ex-lab">The essential major progressions</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 67+71+74 69+72+76 65+69+72" data-step="1.0">I – V – vi – IV · the pop axis</button>
+        <button class="ex" data-play="62+65+69 67+71+74 60+64+67" data-step="1.1">ii – V – I · the jazz turnaround</button>
+        <button class="ex" data-play="60+64+67 69+72+76 65+69+72 67+71+74" data-step="1.0">I – vi – IV – V · the 1950s</button>
+        <button class="ex" data-play="60+64+67 65+69+72 67+71+74 60+64+67" data-step="1.0">I – IV – V – I · the blues/rock skeleton</button>
+        <button class="ex" data-play="60+64+67 64+67+71 65+69+72 67+71+74" data-step="1.0">I – iii – IV – V · rising and hopeful</button>
+        <button class="ex" data-play="69+72+76 65+69+72 60+64+67 67+71+74" data-step="1.0">vi – IV – I – V · the same axis, sadder start</button>
+      </div>
+      <p class="ex-note">The first and last examples use identical chords in a different rotation, and they feel completely different. Whichever chord you start and end on becomes home — progressions are cyclic, so rotation is a free compositional tool.</p>
+
+      <div class="ex-lab">Minor-key progressions</div>
+      <div class="ex-row">
+        <button class="ex" data-play="57+60+64 65+69+72 60+64+67 67+71+74" data-step="1.0">i – VI – III – VII · epic minor</button>
+        <button class="ex" data-play="57+60+64 67+71+74 65+69+72 64+68+71" data-step="1.0">i – VII – VI – V · the Andalusian cadence</button>
+        <button class="ex" data-play="57+60+64 62+65+69 64+68+71 57+60+64" data-step="1.0">i – iv – V – i · classical minor</button>
+        <button class="ex" data-play="57+60+64 60+64+67 62+65+69 65+69+72" data-step="1.0">i – III – iv – VI · gentle, modal</button>
+      </div>
+
+      <div class="ex-lab">The twelve-bar blues, in C</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67+70 60+64+67+70 60+64+67+70 60+64+67+70 65+69+72+75 65+69+72+75 60+64+67+70 60+64+67+70 67+71+74+77 65+69+72+75 60+64+67+70 67+71+74+77" data-step="0.85">All twelve bars</button>
+        <button class="ex" data-play="60+64+67+70 65+69+72+75 60+64+67+70 67+71+74+77" data-step="1.1">The I7 – IV7 – I7 – V7 core</button>
+      </div>
+      <p class="ex-note">Every chord is a dominant seventh, including the tonic — which by lesson 12's logic should be impossible, since I7 wants to resolve away from home. The blues simply decided tension is the resting state. That deliberate rule-break is the genre.</p>
+
+      <div class="ex-lab">Build your own — the same four functions, different chords</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 65+69+72 67+71+74 60+64+67" data-step="1.0">Home – away – tension – home</button>
+        <button class="ex" data-play="69+72+76 62+65+69 67+71+74 60+64+67" data-step="1.0">Same functions, substituted chords</button>
+        <button class="ex" data-play="64+67+71 65+69+72 71+74+77 60+64+67" data-step="1.0">Substituted again</button>
+      </div>
+      <p class="ex-note">Three different chord sets, one identical emotional shape. This is the actual skill: hear the function you need, then choose any chord that performs it. Copying progressions gets you one song; hearing functions gets you all of them.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Progression</dt><dd>An ordered sequence of chords.</dd>
+        <dt>Root motion</dt><dd>The interval the bass moves between consecutive chords. Down a fifth is strongest.</dd>
+        <dt>Turnaround</dt><dd>A short progression at the end of a section that sets up the return to the start.</dd>
+        <dt>Chord substitution</dt><dd>Replacing a chord with another performing the same function.</dd>
+        <dt>Axis progression</dt><dd>I–V–vi–IV and its rotations. Ubiquitous in modern pop.</dd>
+        <dt>Twelve-bar blues</dt><dd>The fixed 12-bar I–IV–V form underpinning blues, rock and R&amp;B.</dd>
+        <dt>Common tone</dt><dd>A note shared by two consecutive chords; more shared notes means smoother movement.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> put one of these into the MicroFreak's sequencer as a bassline of root notes, and improvise a pentatonic melody over it. If the melody sounds right over all four chords, you've felt why keys exist.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-14</span><span class="ttl">Cadences — how phrases end</span><span class="meta">punctuation</span></summary>
+    <div class="body">
+      <p class="goal">Goal: control the sense of finality. Cadences are the full stops, commas and question marks of music.</p>
+      <p class="txt">A <b>cadence</b> is the chord pair that closes a phrase, and it determines how finished the phrase sounds. There are four you need, ordered here from most conclusive to least.</p>
+      <ul style="margin-bottom:14px">
+        <li><b>Perfect authentic · V → I</b> — full stop. Both chords in root position, melody landing on the tonic. Maximum closure, which is why almost every classical piece ends this way.</li>
+        <li><b>Plagal · IV → I</b> — the "amen" cadence. Conclusive but soft and warm, because there's no leading tone doing the work.</li>
+        <li><b>Half · anything → V</b> — a question mark. The phrase stops on tension and leaves you hanging, which makes it perfect for ending a verse that needs a chorus.</li>
+        <li><b>Deceptive · V → vi</b> — the swerve. Everything sets up a resolution to I, and you get the relative minor instead. Bittersweet, and the single most effective way to extend a phrase that felt like it was ending.</li>
+      </ul>
+      <p class="txt">The related trick worth having is the <b>suspension</b>: replace a chord's third with the fourth above the root, creating a mild dissonance, then let it fall to the third. That's a <b>sus4</b> chord, and the resolution is so satisfying that it props up a huge amount of rock and gospel.</p>
+
+      <div class="ex-lab">The four cadences, each preceded by the same setup</div>
+      <div class="ex-row">
+        <button class="ex" data-play="65+69+72 67+71+74 60+64+67" data-step="1.05">Perfect authentic · IV – V – I</button>
+        <button class="ex" data-play="60+64+67 65+69+72 60+64+67" data-step="1.05">Plagal · I – IV – I</button>
+        <button class="ex" data-play="60+64+67 62+65+69 67+71+74" data-step="1.05">Half · I – ii – V · unresolved</button>
+        <button class="ex" data-play="65+69+72 67+71+74 69+72+76" data-step="1.05">Deceptive · IV – V – vi</button>
+      </div>
+      <p class="ex-note">Play the authentic and the deceptive back to back. Identical until the final chord, and the deceptive one physically feels like a step missed on a staircase. That feeling is a musical device you now own.</p>
+
+      <div class="ex-lab">Suspensions</div>
+      <div class="ex-row">
+        <button class="ex" data-play="67+72+74 67+71+74" data-step="1.3">Gsus4 → G</button>
+        <button class="ex" data-play="67+72+74 67+71+74 60+64+67" data-step="1.1">Gsus4 → G → C</button>
+        <button class="ex" data-play="60+65+67 60+64+67" data-step="1.3">Csus4 → C</button>
+        <button class="ex" data-play="60+62+67 60+64+67" data-step="1.3">Csus2 → C · gentler cousin</button>
+      </div>
+
+      <div class="ex-lab">Strengthening and weakening the same ending</div>
+      <div class="ex-row">
+        <button class="ex" data-play="67+71+74 60+64+67" data-step="1.4">V – I, root position · strongest</button>
+        <button class="ex" data-play="71+74+79 64+67+72" data-step="1.4">V – I, inverted · softer, keeps moving</button>
+        <button class="ex" data-play="67+71+74+77 60+64+67" data-step="1.4">V7 – I · strongest of all</button>
+      </div>
+      <p class="ex-note">Inversions weaken a cadence, which sounds like a downside and isn't. Weak cadences are how you end a phrase without ending the song — you need them mid-verse far more often than you need full stops.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Cadence</dt><dd>The chord progression closing a musical phrase.</dd>
+        <dt>Authentic cadence</dt><dd>V → I. The strongest resolution.</dd>
+        <dt>Plagal cadence</dt><dd>IV → I. Softer, no leading tone. The "amen."</dd>
+        <dt>Half cadence</dt><dd>Ending on V. Leaves the phrase open.</dd>
+        <dt>Deceptive cadence</dt><dd>V → vi. Sets up resolution and withholds it.</dd>
+        <dt>Suspension</dt><dd>Holding a non-chord tone that then resolves down by step.</dd>
+        <dt>Sus4 / sus2</dt><dd>A chord with the third replaced by the fourth or second.</dd>
+        <dt>Phrase</dt><dd>A complete musical thought, typically 4 or 8 bars, ended by a cadence.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> you can end the same eight-bar idea four different ways and predict, before playing it, how finished each will sound.</p>
+    </div>
+  </details>
+</section>
+
+<section id="th-4" class="wrap" data-tab="th">
+  <div class="theme">
+    <div class="tn">Theme 4 · Lessons 15–18</div>
+    <h3>Line and voice — making harmony move well</h3>
+    <p>Knowing which chords to use is half the job. The other half is how you get from one to the next, which colours you add, and what melody rides on top. This is where correct starts becoming good.</p>
+  </div>
+
+  <details class="tut">
+    <summary><span class="num">L-15</span><span class="ttl">Voice leading — the smoothest path between chords</span><span class="meta">the pro move</span></summary>
+    <div class="body">
+      <p class="goal">Goal: make the same progression sound dramatically better by changing nothing but the voicings.</p>
+      <p class="txt">Imagine each note of a chord as a separate singer holding a line. <b>Voice leading</b> is the craft of moving those singers from one chord to the next. The guiding principle is almost embarrassingly simple: <b>move each voice as little as possible</b>. Keep any note shared between the two chords exactly where it is (a <b>common tone</b>), and move everything else to the nearest available note.</p>
+      <p class="txt">Playing every chord in root position — the default when you're learning — forces all three voices to leap in parallel, which sounds blocky and amateurish. Using inversions to minimise motion produces a progression that seems to flow rather than lurch, and it's usually the single biggest improvement available to a beginner arrangement.</p>
+      <p class="txt">Two refinements. <b>Contrary motion</b> — bass moving down while the upper voices move up, or vice versa — sounds stronger and more independent than everything moving the same way. And the classical prohibition on <b>parallel fifths and octaves</b> exists because when two voices move in lockstep at those intervals they fuse into one and you lose a voice; you don't have to obey it, but you should know it's why some voicings sound thin.</p>
+
+      <div class="ex-lab">The same progression, twice</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 67+71+74 69+72+76 65+69+72" data-step="1.05">I – V – vi – IV, all root position</button>
+        <button class="ex" data-play="60+64+67 59+62+67 60+64+69 60+65+69" data-step="1.05">Same chords, voice-led</button>
+      </div>
+      <p class="ex-note">Identical harmony. In the second version no voice moves more than two semitones and the top note barely budges — so the ear hears one continuous texture changing colour, rather than four separate blocks. Play them back to back a few times; this difference is worth internalising.</p>
+
+      <div class="ex-lab">Common tones — the notes that don't move</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 64+67+71" data-step="1.3">C → Em · two common tones</button>
+        <button class="ex" data-play="60+64+67 65+69+72" data-step="1.3">C → F root position · none held</button>
+        <button class="ex" data-play="60+64+67 60+65+69" data-step="1.3">C → F inverted · C held</button>
+        <button class="ex" data-play="60+64+67 62+65+69" data-step="1.3">C → Dm · no common tones, feels like a step</button>
+      </div>
+
+      <div class="ex-lab">Contrary motion and bass lines</div>
+      <div class="ex-row">
+        <button class="ex" data-play="48+64+67 47+65+67 45+65+69 43+67+72" data-step="1.05">Bass descending, upper voices rising</button>
+        <button class="ex" data-play="48+64+67 50+62+67 52+60+67 53+59+67" data-step="1.05">Bass up, top down, middle held</button>
+        <button class="ex" data-play="60+64+67 62+66+69 64+68+71" data-step="1.05">Parallel motion — everything shifts together</button>
+      </div>
+      <p class="ex-note">The parallel example is a legitimate effect — it's how a lot of film music and shoegaze works — but notice it sounds like <i>one thick sound sliding</i> rather than three independent parts. That's exactly what the old rule was warning about, stated as a fact rather than a prohibition.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Voice</dt><dd>One independent melodic line within a chord texture.</dd>
+        <dt>Voice leading</dt><dd>How individual voices move from one chord to the next.</dd>
+        <dt>Common tone</dt><dd>A pitch shared by two consecutive chords, ideally held in place.</dd>
+        <dt>Stepwise motion</dt><dd>Moving a voice by one or two semitones. The default for smoothness.</dd>
+        <dt>Contrary motion</dt><dd>Voices moving in opposite directions. Strong and independent.</dd>
+        <dt>Parallel motion</dt><dd>Voices moving in the same direction by the same interval.</dd>
+        <dt>Parallel fifths</dt><dd>Two voices a fifth apart moving together — traditionally avoided because they fuse.</dd>
+        <dt>Inner voice</dt><dd>A line that is neither the bass nor the melody; where most of the craft hides.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> take any progression from lesson 13 and re-voice it so no voice moves more than three semitones between chords. It will sound better and you will have done nothing but move notes into different octaves.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-16</span><span class="ttl">Extended and altered chords — the colours above the seventh</span><span class="meta">spice</span></summary>
+    <div class="body">
+      <p class="goal">Goal: keep stacking thirds past the seventh, and learn to bend the results deliberately.</p>
+      <p class="txt">Stack one more third past the seventh and you get the <b>ninth</b>; again for the <b>eleventh</b>; again for the <b>thirteenth</b>. Past that you'd be back at the root, so thirteen is the ceiling. These are <b>extensions</b>, and they add colour without changing a chord's function — a Cmaj9 does everything a C major triad does, it just does it with more atmosphere.</p>
+      <p class="txt">A practical rule, since five- and six-note chords go muddy fast: <b>you can leave notes out</b>. The root and fifth are the most expendable — a bass player or the bass register handles the root, and the fifth adds little. The third and seventh are what define the chord's identity and must stay. Jazz pianists routinely voice a thirteenth chord as four notes: third, seventh, and two extensions.</p>
+      <p class="txt">Then there are <b>alterations</b>: sharpening or flattening an extension to increase tension. These belong almost exclusively on dominant chords, because a dominant is already unstable and alterations make its pull toward home even more violent. A <b>7♭9</b> is menacing, a <b>7♯9</b> is the Hendrix chord, a <b>7♯11</b> floats, a <b>7♭13</b> is dark and cinematic.</p>
+
+      <div class="ex-lab">Extensions — adding colour, keeping function</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 60+64+67+71 60+64+67+71+74" data-step="1.5">C → Cmaj7 → Cmaj9</button>
+        <button class="ex" data-play="60+63+67+70+74" data-step="2.0">Cm9 · smoky</button>
+        <button class="ex" data-play="60+64+67+70+74" data-step="2.0">C9 dominant</button>
+        <button class="ex" data-play="60+64+67+70+74+81" data-step="2.0">C13 · full stack</button>
+        <button class="ex" data-play="60+64+67+71+78" data-step="2.0">Cmaj7♯11 · the Lydian chord</button>
+      </div>
+
+      <div class="ex-lab">Alterations — tension on the dominant</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67+70" data-step="1.8">C7 · plain</button>
+        <button class="ex" data-play="60+64+67+70+73" data-step="1.8">C7♭9 · menacing</button>
+        <button class="ex" data-play="60+64+67+70+75" data-step="1.8">C7♯9 · the Hendrix chord</button>
+        <button class="ex" data-play="60+64+67+70+78" data-step="1.8">C7♯11 · floating</button>
+        <button class="ex" data-play="60+64+67+70+80" data-step="1.8">C7♭13 · cinematic dread</button>
+      </div>
+
+      <div class="ex-lab">In context — the same cadence, plain then dressed</div>
+      <div class="ex-row">
+        <button class="ex" data-play="62+65+69 67+71+74 60+64+67" data-step="1.15">ii – V – I with triads</button>
+        <button class="ex" data-play="62+65+69+72 67+71+74+77 60+64+67+71" data-step="1.15">With sevenths</button>
+        <button class="ex" data-play="62+65+69+72+76 67+71+74+77+80 60+64+67+71+74" data-step="1.15">With extensions</button>
+        <button class="ex" data-play="62+65+69+72 67+71+77+80 60+64+67+71+74" data-step="1.15">With an altered dominant</button>
+      </div>
+      <p class="ex-note">Four versions of one gesture, walking from folk song to jazz standard without changing a single root. Extensions are a dial, not a switch — and turning it up isn't automatically better, it's just a different amount of information for the listener to process.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Extension</dt><dd>A chord tone above the seventh — the 9th, 11th or 13th.</dd>
+        <dt>Alteration</dt><dd>A raised or lowered extension, adding tension. ♭9, ♯9, ♯11, ♭13.</dd>
+        <dt>Voicing (revisited)</dt><dd>Which chord tones you actually play, and where. Omission is part of it.</dd>
+        <dt>Guide tones</dt><dd>The third and seventh — the notes that define a chord's quality. Never omit these.</dd>
+        <dt>Upper structure</dt><dd>Treating the extensions as a separate triad stacked over the basic chord.</dd>
+        <dt>Altered dominant</dt><dd>A dominant seventh with one or more altered extensions. Maximum pull home.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> you can take any progression and re-dress it at three levels of richness, and you can articulate why you'd choose the sparse version for some material and the dense one for other material.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-17</span><span class="ttl">Borrowed chords and modal interchange</span><span class="meta">the good stuff</span></summary>
+    <div class="body">
+      <p class="goal">Goal: legally use notes from outside your key, which is where most of the emotionally striking moments in pop music come from.</p>
+      <p class="txt">Everything so far has been diatonic — chords built only from the current key. <b>Modal interchange</b> (or <b>mode mixture</b>) breaks that: you borrow a chord from the <i>parallel</i> key or mode, the one sharing your tonic. In C major you can reach into C minor, take one of its chords, and drop it into the progression. The tonic doesn't change, so you don't lose your bearings — but the colour shifts sharply for one bar, and that contrast is the entire effect.</p>
+      <p class="txt">The borrowings that earn their keep in a major key:</p>
+      <ul style="margin-bottom:14px">
+        <li><b>iv</b> (minor four) — the most-used borrowed chord in all of pop. Replacing IV with iv at the end of a phrase is instantly wistful.</li>
+        <li><b>♭VII</b> — from Mixolydian. Rock's favourite non-diatonic chord; think of any classic rock outro.</li>
+        <li><b>♭VI</b> — heroic and cinematic, especially moving to ♭VII then back to I.</li>
+        <li><b>♭III</b> — darkens things sharply. Common in metal and in soul.</li>
+        <li><b>♭II (Neapolitan)</b> — usually in first inversion just before the dominant. Dramatic and old-fashioned in the best way.</li>
+      </ul>
+      <p class="txt">The reverse works too: a minor-key song can borrow the major IV or end on a major tonic — the <b>Picardy third</b>, a centuries-old trick for turning a dark piece hopeful in its final chord.</p>
+
+      <div class="ex-lab">Borrowing from C minor while staying in C major</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 65+69+72 60+64+67" data-step="1.15">I – IV – I · diatonic reference</button>
+        <button class="ex" data-play="60+64+67 65+68+72 60+64+67" data-step="1.15">I – iv – I · borrowed, wistful</button>
+        <button class="ex" data-play="60+64+67 70+74+77 60+64+67" data-step="1.15">I – ♭VII – I · rock</button>
+        <button class="ex" data-play="60+64+67 68+72+75 70+74+77 60+64+67" data-step="1.05">I – ♭VI – ♭VII – I · heroic</button>
+        <button class="ex" data-play="60+64+67 63+67+70 60+64+67" data-step="1.15">I – ♭III – I · dark turn</button>
+      </div>
+      <p class="ex-note">The I–iv–I example changes exactly one note from the diatonic version — A becomes A♭ — and it's the sound of a thousand bridge sections. Cheapest emotional upgrade in music.</p>
+
+      <div class="ex-lab">The Neapolitan, and the Picardy third</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+63+67 65+68+73 67+71+74 60+63+67" data-step="1.1">i – ♭II⁶ – V – i · Neapolitan</button>
+        <button class="ex" data-play="57+60+64 62+65+69 64+68+71 57+60+64" data-step="1.05">Minor progression ending minor</button>
+        <button class="ex" data-play="57+60+64 62+65+69 64+68+71 57+61+64" data-step="1.05">Same, ending major · Picardy third</button>
+      </div>
+
+      <div class="ex-lab">A full borrowed progression</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 67+71+74 69+72+76 65+68+72" data-step="1.05">I – V – vi – iv · the axis, soured</button>
+        <button class="ex" data-play="60+64+67 63+67+70 65+69+72 70+74+77" data-step="1.05">I – ♭III – IV – ♭VII</button>
+      </div>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Modal interchange</dt><dd>Borrowing chords from a parallel key or mode. Also called mode mixture.</dd>
+        <dt>Borrowed chord</dt><dd>A chord from outside the key, usually from the parallel minor or major.</dd>
+        <dt>Chromatic</dt><dd>Using notes outside the current key — the opposite of diatonic.</dd>
+        <dt>Minor iv</dt><dd>The borrowed minor subdominant. Pop's favourite bittersweet chord.</dd>
+        <dt>♭VII</dt><dd>The flat-seven major chord, borrowed from Mixolydian. Rock staple.</dd>
+        <dt>Neapolitan</dt><dd>A major chord on the flattened second degree, usually in first inversion before V.</dd>
+        <dt>Picardy third</dt><dd>Ending a minor-key piece on a major tonic chord.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> take any progression you've written and swap one major chord for its parallel minor (or the reverse). If it makes you raise an eyebrow, you've found modal interchange working.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-18</span><span class="ttl">Melody — writing the part people actually remember</span><span class="meta">the point of it all</span></summary>
+    <div class="body">
+      <p class="goal">Goal: turn a scale into a tune, using contour, rhythm, repetition and the relationship to the chords underneath.</p>
+      <p class="txt">A melody is not a random walk through a scale. It has four ingredients you can control independently.</p>
+      <p class="txt"><b>Contour</b> — the shape it draws in the air. Most memorable melodies have a simple arc: rise to a high point, then fall away. The highest note in a melody is a resource you spend once; put it at the emotional peak, not in bar two.</p>
+      <p class="txt"><b>Rhythm</b> — often more identifiable than the pitches. You can recognise most famous melodies from the rhythm alone, tapped on a table. A melody with an interesting rhythm and dull pitches beats the reverse every time.</p>
+      <p class="txt"><b>Repetition</b> — the mechanism by which anything becomes memorable. A short idea is a <b>motif</b>; repeat it at a different pitch and it becomes a <b>sequence</b>. Listeners need repetition far more than beginner writers assume; the instinct to keep introducing new material is almost always wrong.</p>
+      <p class="txt"><b>Relationship to the harmony</b> — the technical piece. Notes belonging to the current chord (<b>chord tones</b>) sound settled; notes from the scale that aren't in the chord (<b>passing tones</b>) sound like motion. The working rule: <b>put chord tones on strong beats and passing tones on weak beats.</b> Follow it and almost any note sequence works. Break it deliberately and you get tension you can resolve.</p>
+
+      <div class="ex-lab">Motif and sequence — the building blocks</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 62 64 62" data-step="0.3">A four-note motif</button>
+        <button class="ex" data-play="60 62 64 62 62 64 65 64" data-step="0.3">Repeated one step higher · a sequence</button>
+        <button class="ex" data-play="60 62 64 62 62 64 65 64 64 65 67 65" data-step="0.3">Three times — a whole phrase from one idea</button>
+        <button class="ex" data-play="60 62 64 62 64 62 60 - 60 62 64 67 65 64 62 -" data-step="0.28">Motif, then a varied answer</button>
+      </div>
+
+      <div class="ex-lab">Contour — the arc</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60 64 67 72 67 64 60" data-step="0.3">Arch · up and back down</button>
+        <button class="ex" data-play="72 71 69 67 65 64 62 60" data-step="0.28">Descending · resigned</button>
+        <button class="ex" data-play="60 62 60 64 60 67 60 72" data-step="0.26">Rising, with a repeated anchor note</button>
+        <button class="ex" data-play="67 65 64 65 67 69 71 72" data-step="0.3">Dip then climb to the peak</button>
+      </div>
+
+      <div class="ex-lab">Chord tones versus passing tones over a C major chord</div>
+      <div class="ex-row">
+        <button class="ex" data-play="48+60+64+67 - - -" data-step="0.5">The chord alone</button>
+        <button class="ex" data-play="48+64 67 72 67" data-step="0.42">Only chord tones · stable, a bit static</button>
+        <button class="ex" data-play="48+64 65 67 69 67" data-step="0.38">Chord tones on strong beats, passing between</button>
+        <button class="ex" data-play="48+65 62 65 62" data-step="0.42">Only non-chord tones · unresolved, floating</button>
+      </div>
+
+      <div class="ex-lab">A finished melody over I – V – vi – IV</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 67+71+74 69+72+76 65+69+72" data-step="1.1">The chords alone</button>
+        <button class="ex" data-play="67 69 67 64 71 74 71 67 72 76 72 69 69 72 71 67" data-step="0.34">The melody alone</button>
+        <button class="ex" data-play="48+67 69 67 64 55+71 74 71 67 57+72 76 72 69 53+69 72 71 67" data-step="0.36">Melody with a root bass</button>
+      </div>
+      <p class="ex-note">Notice the melody starts each bar on a chord tone of that bar's chord, and that the shape of bar 1 recurs, transposed, in every later bar. One idea, four harmonisations. That's most of songwriting.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Melody</dt><dd>The principal single-note line — the part people sing back.</dd>
+        <dt>Motif</dt><dd>A short, recognisable musical idea that gets reused.</dd>
+        <dt>Sequence</dt><dd>Repeating a motif starting on a different pitch.</dd>
+        <dt>Contour</dt><dd>The rising-and-falling shape of a melodic line.</dd>
+        <dt>Chord tone</dt><dd>A melody note belonging to the chord playing underneath. Sounds resolved.</dd>
+        <dt>Passing tone</dt><dd>A non-chord tone moving stepwise between two chord tones.</dd>
+        <dt>Neighbour tone</dt><dd>A non-chord tone that steps away and immediately returns.</dd>
+        <dt>Call and response</dt><dd>A phrase answered by a contrasting phrase. The oldest melodic structure there is.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> write four bars using exactly one motif, transposed to fit each chord. Resist adding a second idea. Repetition is not laziness — it is how music becomes memorable.</p>
+    </div>
+  </details>
+</section>
+
+<section id="th-5" class="wrap" data-tab="th">
+  <div class="theme">
+    <div class="tn">Theme 5 · Lessons 19–20</div>
+    <h3>Making music — theory at the MicroFreak</h3>
+    <p>Two lessons that put everything on the actual hardware: what the low end should do, and how four minutes of music gets built out of the sequencer's two slots.</p>
+  </div>
+
+  <details class="tut">
+    <summary><span class="num">L-19</span><span class="ttl">Basslines — the most important part nobody notices</span><span class="meta">low end</span></summary>
+    <div class="body">
+      <p class="goal">Goal: write bass parts that define the harmony and the groove at once. This is the MicroFreak's natural home — one voice, low, punchy.</p>
+      <p class="txt">The bass has two jobs at once. Harmonically, <b>the lowest note determines how a chord is heard</b> — play C-E-G over an A and the ear hears A minor 7, not C major. The bass, not the chord, decides what the chord is. Rhythmically, the bass locks with the kick drum to create the groove; where it sits relative to the kick matters more than which notes it plays.</p>
+      <p class="txt">A ladder of bassline approaches, easiest first:</p>
+      <ul style="margin-bottom:14px">
+        <li><b>Root notes</b> — one note per chord. Never wrong, and it's what most of pop does.</li>
+        <li><b>Root and fifth</b> — alternate between them. Instant country, disco, or techno depending on the rhythm.</li>
+        <li><b>Octave jumps</b> — root down, root up. The disco and Italo bassline.</li>
+        <li><b>Walking bass</b> — a note per beat, moving mostly stepwise, chord tones on strong beats, passing tones connecting. Exactly lesson 18's rule applied to the bottom.</li>
+        <li><b>Pedal tone</b> — hold one bass note while the chords change above it. Builds enormous tension and is trivially easy on a synth.</li>
+      </ul>
+      <p class="txt">One practical warning that theory doesn't teach you but mixing does: the low end has no room. Two bass notes at once turns to mud, and a bassline that fights the kick drum turns to soup. Keep it monophonic, keep it in the same rhythmic pocket as the kick, and if it sounds muddy move the bass notes off the kick's beats rather than reaching for the filter.</p>
+
+      <div class="ex-lab">The ladder, over I – V – vi – IV</div>
+      <div class="ex-row">
+        <button class="ex" data-play="48 - 55 - 57 - 53 -" data-step="0.4">Roots only</button>
+        <button class="ex" data-play="48 55 48 55 55 62 55 62 57 64 57 64 53 60 53 60" data-step="0.24">Root and fifth</button>
+        <button class="ex" data-play="48 60 48 60 55 67 55 67 57 69 57 69 53 65 53 65" data-step="0.22">Octave jumps · disco</button>
+        <button class="ex" data-play="48 50 52 53 55 57 59 60" data-step="0.28">Walking, ascending</button>
+        <button class="ex" data-play="48 52 55 54 53 57 60 59" data-step="0.28">Walking, chord tones on the beat</button>
+      </div>
+
+      <div class="ex-lab">Bass changes what a chord means</div>
+      <div class="ex-row">
+        <button class="ex" data-play="48+60+64+67" data-step="1.9">C E G over C · C major</button>
+        <button class="ex" data-play="45+60+64+67" data-step="1.9">Same three notes over A · Am7</button>
+        <button class="ex" data-play="53+60+64+67" data-step="1.9">Over F · Fmaj7</button>
+        <button class="ex" data-play="50+60+64+67" data-step="1.9">Over D · D9sus4</button>
+      </div>
+      <p class="ex-note">Four completely different chords; the right hand never moved. This is why bass players get annoyed when nobody notices them.</p>
+
+      <div class="ex-lab">Pedal tone and acid lines</div>
+      <div class="ex-row">
+        <button class="ex" data-play="48+60+64+67 48+62+65+69 48+64+67+71 48+65+69+72" data-step="1.05">Pedal C under moving chords</button>
+        <button class="ex" data-play="48 48 60 48 51 48 55 48 48 48 60 48 53 48 55 48" data-step="0.15">Acid line · root, octave, neighbours</button>
+        <button class="ex" data-play="48 - 48 55 - 51 48 -" data-step="0.2">Syncopated, holes left for the kick</button>
+      </div>
+      <p class="ex-note">For the acid line: set the bass stab patch from recipe 03, add Glide, sequence this into the MicroFreak and let Spice &amp; Dice reshuffle the rhythm. Theory gives you the notes; the sequencer gives you the variation.</p>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Bassline</dt><dd>The lowest melodic line; it defines the harmony and anchors the groove.</dd>
+        <dt>Root motion</dt><dd>How the bass moves between chord roots. The engine of a progression's strength.</dd>
+        <dt>Slash chord</dt><dd>A chord over a specified bass note, written C/E — the bass note isn't the root.</dd>
+        <dt>Walking bass</dt><dd>A steady note-per-beat line connecting chord tones with passing notes.</dd>
+        <dt>Pedal tone</dt><dd>A sustained or repeated bass note held while harmony changes above it.</dd>
+        <dt>Pocket</dt><dd>The rhythmic relationship between bass and drums that makes a groove feel good.</dd>
+        <dt>Inversion (in the bass)</dt><dd>Putting the third or fifth in the bass to smooth the bass line's own melody.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Checkpoint:</b> take a progression, play only its root notes on the MicroFreak with the bass stab patch, then re-record it as a walking line. The chords never changed and the track went from static to moving.</p>
+    </div>
+  </details>
+
+  <details class="tut">
+    <summary><span class="num">L-20</span><span class="ttl">Form and arrangement — four minutes from two sequences</span><span class="meta">the finish line</span></summary>
+    <div class="body">
+      <p class="goal">Goal: assemble everything into a piece with a shape, using the constraints the MicroFreak actually imposes.</p>
+      <p class="txt"><b>Form</b> is the large-scale plan: which sections happen in which order. Popular music mostly uses a handful — verse/chorus, AABA, or in electronic music a continuous build-and-release structure. The functions are the same regardless of genre: something establishes the material, something contrasts with it, something returns.</p>
+      <p class="txt">Contrast is the mechanism, and it works on more axes than just "different chords." You can contrast <b>register</b> (move the melody up an octave), <b>density</b> (drop to just bass and drums), <b>harmonic rhythm</b> (change chords twice as fast), <b>timbre</b> (open the filter, change the engine), or simply <b>silence</b>. A chorus doesn't feel like a chorus because it's louder; it feels like one because the verse before it held something back.</p>
+      <p class="txt">Now the hardware reality. The MicroFreak gives you <b>two sequences per preset, A and B</b>, plus four modulation lanes, plus Spice and Dice. That is not a limitation to work around — it maps almost exactly onto song form:</p>
+      <ul style="margin-bottom:14px">
+        <li><b>Sequence A</b> = your verse material. <b>Sequence B</b> = your chorus or bridge. Switching A↔B in time <i>is</i> your arrangement.</li>
+        <li><b>Mod lanes</b> = the build. Automate Cutoff opening across the loop and you have a riser without touching a fader.</li>
+        <li><b>Spice</b> = the tension dial. Raise it through a section, and drop it hard at the moment B arrives.</li>
+        <li><b>Oct buttons</b> = instant register contrast, which is the cheapest and most effective drop trick there is.</li>
+      </ul>
+      <p class="txt">A concrete four-minute plan: A for 8 bars with the filter mostly closed → open Cutoff gradually over 8 more → raise Spice through 4 bars → switch to B with Oct up one and Spice back to zero → 16 bars of B → back to A with the filter closed for the outro. That's a complete piece of music, one preset, no overdubs.</p>
+
+      <div class="ex-lab">Contrast between two sections</div>
+      <div class="ex-row">
+        <button class="ex" data-play="60+64+67 65+69+72 69+72+76 67+71+74" data-step="1.0">Section A · settled, tonic-first</button>
+        <button class="ex" data-play="69+72+76 65+69+72 60+64+67 67+71+74" data-step="1.0">Section B · same chords, starts on vi</button>
+        <button class="ex" data-play="60+64+67 62+65+69 64+67+71 65+69+72 67+71+74 69+72+76 71+74+77 72+76+79" data-step="0.5">Section B alt · harmonic rhythm doubled</button>
+      </div>
+
+      <div class="ex-lab">Register and density as arrangement tools</div>
+      <div class="ex-row">
+        <button class="ex" data-play="48 - 55 - 57 - 53 -" data-step="0.42">Intro · bass only</button>
+        <button class="ex" data-play="48+60+64 - 55+67+71 - 57+69+72 - 53+65+69 -" data-step="0.42">Verse · bass plus chords</button>
+        <button class="ex" data-play="48+60+64+72 - 55+67+71+79 - 57+69+72+81 - 53+65+69+77 -" data-step="0.42">Chorus · melody octave added on top</button>
+        <button class="ex" data-play="48 - - - 48 - - -" data-step="0.42">Breakdown · everything stripped</button>
+      </div>
+      <p class="ex-note">Play those four in order and you've heard an arrangement. The chords never changed once. Every bit of the drama came from what was added and taken away — which is the entire craft, and the reason a one-voice synth can carry a whole track.</p>
+
+      <div class="ex-lab">A complete miniature</div>
+      <div class="ex-row">
+        <button class="ex" data-play="48 - 48 - 48 55 - - 48+60+64 - 55+67+71 - 57+69+72 - 53+65+69 - 48+60+64+72 - 55+67+71+79 - 57+69+72+81 - 53+65+69+77 - 48+60+64 - - - 48 - - -" data-step="0.34">Intro → verse → chorus → outro</button>
+      </div>
+
+      <div class="vocab"><h5>Vocabulary</h5><dl>
+        <dt>Form</dt><dd>The large-scale sequence of sections in a piece.</dd>
+        <dt>Section</dt><dd>A self-contained chunk — verse, chorus, bridge, breakdown.</dd>
+        <dt>Arrangement</dt><dd>Which parts play when, and in what register and density.</dd>
+        <dt>Harmonic rhythm</dt><dd>How fast the chords change. Doubling it raises energy without new material.</dd>
+        <dt>Register</dt><dd>The octave range a part occupies. Shifting it is the cheapest contrast available.</dd>
+        <dt>Density / texture</dt><dd>How many things are sounding at once.</dd>
+        <dt>Build and drop</dt><dd>Accumulating tension over bars, then releasing it abruptly.</dd>
+        <dt>Turnaround (revisited)</dt><dd>The bar or two that steers one section into the next.</dd>
+      </dl></div>
+
+      <p class="listen"><b>Final checkpoint:</b> record a four-minute jam from one MicroFreak preset with a clear intro, a section change, a build and an ending — using theory to choose the notes and the sequencer to perform them. That's the whole guide, front to back, in one take.</p>
+    </div>
+  </details>
+</section>
+
+<section id="glossary" class="wrap" data-tab="th">
+  <div class="silk"><span>Glossary — the lingo</span></div>
+  <p class="lead">Every term from both halves of this guide — synth vocabulary and music theory vocabulary — in one searchable place. Type to filter.</p>
+  <input class="gsearch" id="gsearch" type="search" placeholder="Search a term… e.g. resonance, or cadence" aria-label="Search glossary">
+  <div id="glist"></div>
+</section>
+
 
 <footer>MicroFreak field guide · no cables were harmed</footer>
 
@@ -565,8 +1739,8 @@ footer{padding:44px 0 60px;text-align:center;color:var(--ink-faint);font-family:
 const GLOSSARY=[
 ["Sound basics",[
 ["Pitch / frequency","How high or low a note is. Measured in Hz (vibrations per second) — higher Hz = higher note."],
-["Harmonics / overtones","Quieter \u201chidden\u201d tones stacked above the main note. More harmonics = brighter, buzzier sound."],
-["Timbre","The \u201ccolor\u201d of a sound — why a flute and a guitar playing the same note sound different."],
+["Harmonics / overtones","Quieter “hidden” tones stacked above the main note. More harmonics = brighter, buzzier sound."],
+["Timbre","The “color” of a sound — why a flute and a guitar playing the same note sound different."],
 ["Octave / semitone","Octave = same note at double the frequency. Semitone = the smallest step between two keys."],
 ["Patch / preset","A saved sound — all knob positions and settings stored together. The words are interchangeable."]
 ]],
@@ -582,9 +1756,9 @@ const GLOSSARY=[
 ["Filter — sculpting the tone",[
 ["Filter","Removes some harmonics to reshape the tone — an ultra-powerful tone knob."],
 ["Cutoff","The frequency where the filter starts cutting. Down = darker and muffled, up = brighter."],
-["Resonance","A volume boost right at the cutoff point. Adds a whistling, squelchy, \u201cacid\u201d character."],
+["Resonance","A volume boost right at the cutoff point. Adds a whistling, squelchy, “acid” character."],
 ["LPF / BPF / HPF","Low-pass keeps the lows (the classic), high-pass keeps the highs (thin, airy), band-pass keeps only a middle slice (nasal)."],
-["Sweep","Moving the cutoff while a note plays — the classic \u201cwooaaah\u201d opening-up effect of dance music."]
+["Sweep","Moving the cutoff while a note plays — the classic “wooaaah” opening-up effect of dance music."]
 ]],
 ["Envelopes — shaping notes in time",[
 ["Envelope / ADSR","A shape describing how a note evolves: Attack (fade-in), Decay (fall), Sustain (held level), Release (fade-out)."],
@@ -606,10 +1780,90 @@ const GLOSSARY=[
 ["Playing & sequencing",[
 ["Mono / para / poly","Monophonic = one note at a time. Polyphonic = full chords. Paraphonic (the MicroFreak) = several notes sharing one filter."],
 ["Arpeggiator (arp)","Hold a chord and the synth plays its notes one by one in a pattern — instant melodies."],
-["Sequencer / step","Records a looping phrase note by note. Each slot in the loop is a \u201cstep\u201d."],
+["Sequencer / step","Records a looping phrase note by note. Each slot in the loop is a “step”."],
 ["Sync / BPM / swing","Sync locks tempo to a clock. BPM = beats per minute. Swing delays every other note for groove."],
 ["Spice & Dice","MicroFreak-specific: Dice reshuffles the rhythm of your sequence, Spice sets how much variation is applied."],
 ["MIDI","The universal language instruments use to talk — notes, tempo, knob movements. No audio, just instructions."]
+]],
+["Theory — pitch, intervals & scales",[
+["Semitone / half step","The smallest step in Western music — any two adjacent keys. Twelve of them make an octave."],
+["Whole step / tone","Two semitones. Also called a major second."],
+["Pitch class","A note name irrespective of octave — every C anywhere is the same pitch class."],
+["Chromatic","Using all twelve semitones in order; or, any note outside the current key."],
+["Enharmonic","Two names for the same pitch, like C♯ and D♭."],
+["Interval","The distance between two notes, named by letter-span plus quality (major 3rd, perfect 5th…)."],
+["Major / minor (interval)","The two sizes a 2nd, 3rd, 6th or 7th can be. Minor is one semitone smaller. This is the happy/sad switch."],
+["Perfect","The quality of unisons, 4ths, 5ths and octaves — the most stable intervals."],
+["Tritone","Six semitones, half an octave. The most unstable interval and the engine of harmonic tension."],
+["Consonance / dissonance","Simple frequency ratios sound settled (consonant); complex ones sound tense (dissonant)."],
+["Harmonic series","The stack of overtones above any note. Where the octave, fifth and major third come from."],
+["Scale","An ordered selection of pitches used as raw material. Major = W-W-H-W-W-W-H."],
+["Tonic","Scale degree 1 — home, the note everything resolves to."],
+["Scale degree","A note's numbered position in its scale, 1 through 7."],
+["Leading tone","Degree 7, a semitone under the tonic, pulling strongly upward to it."],
+["Natural / harmonic / melodic minor","The three minor scales. Harmonic raises the 7th; melodic also raises the 6th ascending."],
+["Relative minor","The minor key sharing a major key's notes, three semitones below its tonic."],
+["Parallel minor","The minor key with the same tonic as a major key. The source of borrowed chords."],
+["Mode","A scale formed by treating a different degree of a parent scale as home. Dorian, Phrygian, Lydian, Mixolydian…"],
+["Characteristic note","The single degree that distinguishes a mode from plain major or minor."],
+["Pentatonic","A five-note scale. Major pentatonic drops degrees 4 and 7 — the two tense ones."],
+["Blue note","The ♭5 added to minor pentatonic. Used in passing, never landed on."],
+["Key / key signature","The scale and tonic a passage is built on, and the sharps or flats that come with it."],
+["Circle of fifths","The twelve keys arranged by ascending fifth. Neighbours differ by one accidental."],
+["Transposition","Moving a whole passage by a fixed interval, keeping all relationships intact."],
+["Modulation (key change)","Changing key mid-piece. Close on the circle is smooth; far is dramatic."]
+]],
+["Theory — chords & harmony",[
+["Chord / triad","Three or more notes together. A triad is three notes stacked in thirds: root, third, fifth."],
+["Root","The note a chord is built on and named after."],
+["Chord quality","Major (4+3 semitones), minor (3+4), diminished (3+3), augmented (4+4)."],
+["Inversion","A chord with something other than its root in the bass."],
+["Voicing","The specific octave arrangement and spacing of a chord's notes. Spread low, tight high."],
+["Diatonic","Using only notes belonging to the current key."],
+["Roman numerals","Chord notation by scale degree — I ii iii IV V vi vii°. Uppercase major, lowercase minor."],
+["Function","A chord's role: tonic (home), subdominant (departure), dominant (tension)."],
+["Seventh chord","A four-note chord — a triad with another third on top. maj7, 7, m7, ø7, °7."],
+["Dominant seventh","Major triad plus minor 7th, built on degree 5. Contains the key's tritone; pulls hard to I."],
+["Guide tones","The third and seventh — the notes that define a chord's quality. Never omit them."],
+["Extension","A chord tone above the seventh: the 9th, 11th or 13th. Colour without changed function."],
+["Alteration","A raised or lowered extension (♭9, ♯9, ♯11, ♭13). Almost always on dominants."],
+["Progression","An ordered sequence of chords."],
+["Root motion","How far the bass moves between chords. Down a fifth is the strongest move in music."],
+["Common tone","A note shared by two consecutive chords. More shared notes = smoother change."],
+["Cadence","The chord pair closing a phrase. Authentic V→I, plagal IV→I, half →V, deceptive V→vi."],
+["Suspension / sus4","Replacing a chord's third with the fourth, then letting it fall back. Tension and release in one chord."],
+["Voice leading","How individual lines move between chords. Move each voice as little as possible."],
+["Contrary motion","Voices moving in opposite directions. Sounds strong and independent."],
+["Parallel fifths","Two voices a fifth apart moving in lockstep — they fuse into one, which is why it's traditionally avoided."],
+["Modal interchange","Borrowing chords from the parallel key or mode. Also called mode mixture."],
+["Borrowed chord","A chord from outside the key — minor iv, ♭VII, ♭VI and ♭III are the useful ones."],
+["Picardy third","Ending a minor-key piece on a major tonic chord."],
+["Slash chord","A chord over a specified bass note, written C/E. The bass note isn't the root."]
+]],
+["Theory — rhythm, melody & form",[
+["Beat / pulse","The steady tick you tap your foot to."],
+["Tempo / BPM","How fast the beats go, in beats per minute."],
+["Bar / measure","A fixed group of beats — the unit music is counted in."],
+["Time signature","How many beats per bar and what counts as one beat. 4/4, 3/4, 6/8."],
+["Downbeat","Beat one of a bar. The natural landing point."],
+["Subdivision","Splitting a beat into equal smaller parts — eighths, sixteenths, triplets."],
+["Syncopation","Accenting notes that fall between the strong beats. The main source of groove."],
+["Swing / shuffle","Delaying every second subdivision so the grid lilts instead of ticking."],
+["Melody","The principal single-note line — the part people sing back."],
+["Motif","A short recognisable idea that gets reused. The atom of melody."],
+["Sequence (melodic)","Repeating a motif starting on a different pitch."],
+["Contour","The rising and falling shape of a melodic line."],
+["Chord tone","A melody note belonging to the chord underneath. Sounds resolved; put these on strong beats."],
+["Passing tone","A non-chord tone moving stepwise between two chord tones. Sounds like motion."],
+["Phrase","A complete musical thought, usually 4 or 8 bars, closed by a cadence."],
+["Call and response","A phrase answered by a contrasting phrase. The oldest melodic structure there is."],
+["Bassline","The lowest line. It defines how the harmony is heard and locks the groove."],
+["Walking bass","A note per beat, mostly stepwise, chord tones on strong beats."],
+["Pedal tone","A held or repeated bass note while harmony changes above it. Builds tension cheaply."],
+["Form","The large-scale order of sections — verse, chorus, bridge."],
+["Arrangement","Which parts play when, in what register and density."],
+["Harmonic rhythm","How fast the chords change. Doubling it raises energy without new material."],
+["Texture / density","How many things are sounding at once. Taking parts away is an arrangement tool."]
 ]]];
 
 const glist=document.getElementById('glist');
@@ -626,8 +1880,31 @@ document.getElementById('gsearch').addEventListener('input',e=>{
     c.classList.toggle('hide',q&&!c.querySelector('.gterm:not(.hide)'));
   });
 });
+/* ---------- tabs ---------- */
+const TABNAME={mf:'Preset 001 · MicroFreak',pg:'Preset 002 · Playground',th:'Preset 003 · Music theory'};
+function showTab(t,keepScroll){
+  document.querySelectorAll('.tb').forEach(b=>{
+    const on=b.dataset.tab===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');
+  });
+  document.querySelectorAll('.subnav').forEach(n=>n.hidden=n.dataset.tab!==t);
+  document.querySelectorAll('section[data-tab]').forEach(s=>s.hidden=s.dataset.tab!==t);
+  document.getElementById('oled-line').textContent=TABNAME[t]||TABNAME.mf;
+  if(!keepScroll)window.scrollTo({top:0,behavior:'auto'});
+}
+document.querySelectorAll('.tb').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
 
-/* ---------- mini synth ---------- */
+/* deep links keep working across tabs: #glossary from the MicroFreak nav jumps into the theory tab */
+function routeHash(){
+  const id=location.hash.slice(1);if(!id)return false;
+  const el=document.getElementById(id);if(!el)return false;
+  const sec=el.closest('section[data-tab]');if(!sec)return false;
+  showTab(sec.dataset.tab,true);
+  requestAnimationFrame(()=>el.scrollIntoView({block:'start'}));
+  return true;
+}
+window.addEventListener('hashchange',routeHash);
+
+/* ---------- audio core ---------- */
 let AC=null,master=null;
 function audio(){
   if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();
@@ -642,8 +1919,34 @@ const $=id=>document.getElementById(id);
 const sliders={a:'p-a',d:'p-d',s:'p-s',r:'p-r',c:'p-c',q:'p-q'};
 const outs={a:'o-a',d:'o-d',s:'o-s',r:'o-r',c:'o-c',q:'o-q'};
 
+const hz=m=>440*Math.pow(2,(m-69)/12);
 function cutoffHz(v){return 120*Math.pow(80,v/100);} /* 120 Hz .. ~9.6 kHz */
 
+/* one voice, scheduled. Used by both the live keyboard and the theory examples. */
+function mkVoice(ctx,midi,when){
+  const osc=ctx.createOscillator();osc.type=P.wave;osc.frequency.value=hz(midi);
+  const flt=ctx.createBiquadFilter();flt.type='lowpass';flt.Q.value=P.q/8;
+  const g=ctx.createGain();g.gain.value=0;
+  osc.connect(flt);flt.connect(g);g.connect(master);
+  const aT=0.002+2.2*Math.pow(P.a/100,2), dT=0.03+2.5*Math.pow(P.d/100,2), sL=Math.pow(P.s/100,1.5)*0.85;
+  g.gain.setValueAtTime(0,when);
+  g.gain.linearRampToValueAtTime(0.85,when+aT);
+  g.gain.setTargetAtTime(sL,when+aT,Math.max(0.02,dT/3));
+  /* small filter-envelope for punch */
+  const fBase=cutoffHz(P.c);
+  flt.frequency.setValueAtTime(Math.min(12000,fBase*1.8),when);
+  flt.frequency.setTargetAtTime(fBase,when+aT,0.12);
+  osc.start(when);
+  return {osc,g,flt};
+}
+function relVoice(v,when,live){
+  const rT=0.02+3*Math.pow(P.r/100,2);
+  if(live){v.g.gain.cancelScheduledValues(when);v.g.gain.setValueAtTime(v.g.gain.value,when);}
+  v.g.gain.setTargetAtTime(0,when,Math.max(0.015,rT/4));
+  v.osc.stop(when+rT+0.4);
+}
+
+/* ---------- playground UI ---------- */
 function drawEnv(){
   const x0=30,w=840,top=30,base=160;
   const ax=x0+w*0.32*(P.a/100), dx=ax+w*0.22*(P.d/100), rx=x0+w*0.76;
@@ -674,57 +1977,38 @@ function applyPreset(name){
   Object.assign(P,p);
   Object.keys(sliders).forEach(k=>{$(sliders[k]).value=P[k];$(outs[k]).value=P[k];});
   document.querySelectorAll('.wave-row button').forEach(x=>x.classList.toggle('on',x.dataset.wave===P.wave));
-  document.querySelectorAll('.preset-row button').forEach(x=>x.classList.toggle('on',x.dataset.preset===name));
+  document.querySelectorAll('.preset-row button[data-preset]').forEach(x=>x.classList.toggle('on',x.dataset.preset===name));
   drawEnv();
 }
 document.querySelectorAll('[data-preset]').forEach(b=>{
   b.addEventListener('click',()=>{
     applyPreset(b.dataset.preset);
-    if(!b.closest('.preset-row')){document.getElementById('playground').scrollIntoView({behavior:'smooth'});}
+    if(!b.closest('.preset-row')){showTab('pg',true);$('playground').scrollIntoView({behavior:'smooth'});}
   });
 });
 
-/* voices */
-const NOTES=[['C4',261.63,'A'],['C#4',277.18,'W'],['D4',293.66,'S'],['D#4',311.13,'E'],['E4',329.63,'D'],['F4',349.23,'F'],['F#4',369.99,'T'],['G4',392.0,'G'],['G#4',415.3,'Y'],['A4',440.0,'H'],['A#4',466.16,'U'],['B4',493.88,'J'],['C5',523.25,'K']];
+/* ---------- live keyboard ---------- */
+const NOTES=[['C',60,'A'],['C#',61,'W'],['D',62,'S'],['D#',63,'E'],['E',64,'D'],['F',65,'F'],['F#',66,'T'],['G',67,'G'],['G#',68,'Y'],['A',69,'H'],['A#',70,'U'],['B',71,'J'],['C↑',72,'K']];
 const kbd=$('kbd');const keyEls={};
-NOTES.forEach(([n,f,kc])=>{
+let octShift=0;
+NOTES.forEach(([n,m,kc])=>{
   const el=document.createElement('div');
   el.className='key'+(n.includes('#')?' sharp':'');
   el.textContent=kc;el.dataset.note=n;
   el.setAttribute('role','button');el.setAttribute('aria-label','Play note '+n);el.tabIndex=0;
-  kbd.appendChild(el);keyEls[n]={el,f};
+  kbd.appendChild(el);keyEls[n]={el,m};
 });
 const active={};
 function noteOn(n){
   if(active[n])return;
-  const ctx=audio(),now=ctx.currentTime,f=keyEls[n].f;
-  const bassMode=document.querySelector('.preset-row button.on')?.dataset.preset==='bass';
-  const osc=ctx.createOscillator();osc.type=P.wave;osc.frequency.value=bassMode?f/2:f;
-  const flt=ctx.createBiquadFilter();flt.type='lowpass';
-  flt.frequency.value=cutoffHz(P.c);flt.Q.value=P.q/8;
-  const g=ctx.createGain();g.gain.value=0;
-  osc.connect(flt);flt.connect(g);g.connect(master);
-  const aT=0.002+2.2*Math.pow(P.a/100,2), dT=0.03+2.5*Math.pow(P.d/100,2), sL=Math.pow(P.s/100,1.5)*0.85;
-  g.gain.setValueAtTime(0,now);
-  g.gain.linearRampToValueAtTime(0.85,now+aT);
-  g.gain.setTargetAtTime(sL,now+aT,Math.max(0.02,dT/3));
-  /* small filter-envelope for punch */
-  const fBase=cutoffHz(P.c);
-  flt.frequency.setValueAtTime(Math.min(12000,fBase*1.8),now);
-  flt.frequency.setTargetAtTime(fBase,now+aT,0.12);
-  osc.start(now);
-  active[n]={osc,g,flt};
-  keyEls[n].el.classList.add('held');
+  const ctx=audio();
+  const v=mkVoice(ctx,keyEls[n].m+octShift*12,ctx.currentTime);
+  active[n]=v;keyEls[n].el.classList.add('held');
 }
 function noteOff(n){
   const v=active[n];if(!v)return;
-  const now=AC.currentTime,rT=0.02+3*Math.pow(P.r/100,2);
-  v.g.gain.cancelScheduledValues(now);
-  v.g.gain.setValueAtTime(v.g.gain.value,now);
-  v.g.gain.setTargetAtTime(0,now,Math.max(0.015,rT/4));
-  v.osc.stop(now+rT+0.4);
-  delete active[n];
-  keyEls[n].el.classList.remove('held');
+  relVoice(v,AC.currentTime,true);
+  delete active[n];keyEls[n].el.classList.remove('held');
 }
 Object.keys(keyEls).forEach(n=>{
   const el=keyEls[n].el;
@@ -734,15 +2018,108 @@ Object.keys(keyEls).forEach(n=>{
   el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();noteOn(n);}});
   el.addEventListener('keyup',e=>{if(e.key==='Enter'||e.key===' ')noteOff(n);});
 });
-const KEYMAP={};NOTES.forEach(([n,f,kc])=>KEYMAP[kc.toLowerCase()]=n);
+function setOct(d){
+  octShift=Math.max(-2,Math.min(2,octShift+d));
+  $('oct-val').value=(octShift>0?'+':'')+octShift;
+}
+$('oct-dn').addEventListener('click',()=>setOct(-1));
+$('oct-up').addEventListener('click',()=>setOct(1));
+
+const KEYMAP={};NOTES.forEach(([n,m,kc])=>KEYMAP[kc.toLowerCase()]=n);
 window.addEventListener('keydown',e=>{
   if(e.repeat||e.target.tagName==='INPUT')return;
+  if(e.key==='z'||e.key==='Z'){setOct(-1);return;}
+  if(e.key==='x'||e.key==='X'){setOct(1);return;}
   const n=KEYMAP[e.key.toLowerCase()];if(n)noteOn(n);
 });
 window.addEventListener('keyup',e=>{
   const n=KEYMAP[e.key.toLowerCase()];if(n)noteOff(n);
 });
+
+/* ---------- theory: playable examples ---------- */
+/* grammar: space = next step, "+" = notes together, "-" = a rest.
+   "60+64+67 67+71+74" is two chords; "60 62 64" is a melody. */
+function parsePlay(s){
+  return s.trim().split(/\s+/).map(tok=>tok==='-'?[]:tok.split('+').map(Number));
+}
+const MINI_LO=48,MINI_HI=84;
+function miniKbd(){
+  const d=document.createElement('div');d.className='mini';d.setAttribute('aria-hidden','true');
+  for(let m=MINI_LO;m<=MINI_HI;m++){
+    const k=document.createElement('span');
+    k.className='mk'+([1,3,6,8,10].includes(m%12)?' bk':'');
+    k.dataset.m=m;
+    if(m%12===0)k.dataset.lab='C'+(m/12-1);
+    d.appendChild(k);
+  }
+  return d;
+}
+function hiMini(mini,notes){
+  if(!mini)return;
+  const set=new Set(notes);
+  mini.querySelectorAll('.mk').forEach(k=>k.classList.toggle('on',set.has(+k.dataset.m)));
+}
+let liveVoices=[],timers=[],curBtn=null;
+function stopPhrase(){
+  timers.forEach(clearTimeout);timers=[];
+  if(AC){const now=AC.currentTime;
+    liveVoices.forEach(v=>{try{v.g.gain.cancelScheduledValues(now);v.g.gain.setTargetAtTime(0,now,0.01);v.osc.stop(now+0.12);}catch(e){}});}
+  liveVoices=[];
+  document.querySelectorAll('button.ex.playing').forEach(b=>b.classList.remove('playing'));
+  document.querySelectorAll('.mini .mk.on').forEach(k=>k.classList.remove('on'));
+  curBtn=null;
+}
+function playPhrase(events,step,mini,btn){
+  stopPhrase();
+  const ctx=audio(),t0=ctx.currentTime+0.05;
+  curBtn=btn;if(btn)btn.classList.add('playing');
+  events.forEach((ev,i)=>{
+    const when=t0+i*step;
+    ev.forEach(m=>{const v=mkVoice(ctx,m,when);relVoice(v,when+step*0.92);liveVoices.push(v);});
+    timers.push(setTimeout(()=>hiMini(mini,ev),Math.max(0,(when-ctx.currentTime)*1000)));
+  });
+  const endMs=(t0+events.length*step-ctx.currentTime)*1000;
+  timers.push(setTimeout(()=>{
+    hiMini(mini,[]);
+    if(btn)btn.classList.remove('playing');
+    if(curBtn===btn)curBtn=null;
+  },Math.max(0,endMs)));
+}
+/* one mini keyboard per lesson, shared by all its examples */
+document.querySelectorAll('.tut .body').forEach(body=>{
+  const rows=body.querySelectorAll('.ex-row');
+  if(!rows.length)return;
+  const mini=miniKbd();
+  rows[rows.length-1].insertAdjacentElement('afterend',mini);
+  body.querySelectorAll('button.ex').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(curBtn===btn){stopPhrase();return;}
+      playPhrase(parsePlay(btn.dataset.play),parseFloat(btn.dataset.step)||0.4,mini,btn);
+    });
+  });
+});
+/* stop playback when its lesson is collapsed, or when leaving the tab */
+document.querySelectorAll('details.tut').forEach(d=>{
+  d.addEventListener('toggle',()=>{if(!d.open&&curBtn&&d.contains(curBtn))stopPhrase();});
+});
+document.querySelectorAll('.tb').forEach(b=>b.addEventListener('click',stopPhrase));
+
+/* ponytail: one runnable check — ~200 hand-written note lists, a typo would be silent otherwise */
+function selfTest(){
+  const bad=[],btns=document.querySelectorAll('[data-play]');
+  btns.forEach(b=>parsePlay(b.dataset.play).forEach(ev=>ev.forEach(m=>{
+    if(!Number.isInteger(m)||m<24||m>96)bad.push(b.textContent.trim()+' → '+m);
+  })));
+  if(bad.length)console.error('[theory] bad note data:',bad);
+  else console.log('[theory] '+btns.length+' playable examples parse OK');
+  return bad;
+}
+
+/* ---------- boot ---------- */
 drawEnv();
+if(!routeHash())showTab('mf',true);
+selfTest();
 </script>
+
 </body>
 </html>
